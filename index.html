@@ -3,223 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmplifyAd - Music Promotion Hub</title>
+    <title>AmplifyAd - Private Music Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-        }
+        .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); }
     </style>
 </head>
 <body class="gradient-bg text-gray-100 min-h-screen font-sans">
 
-    <header class="border-b border-gray-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+    <!-- ================= AUTH SCREEN (Shown by default) ================= -->
+    <div id="authScreen" class="min-h-screen flex items-center justify-center px-4">
+        <div class="bg-slate-900/80 border border-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <h1 class="text-3xl font-black tracking-wider text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 mb-2">
                 AMPLIFY<span class="text-white">AD</span>
             </h1>
-            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-medium border border-emerald-500/20 flex items-center gap-1.5">
-                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> Connected to Cloud Database
-            </span>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <div class="lg:col-span-5 space-y-6">
-            <div class="bg-slate-900/80 border border-gray-800 rounded-2xl p-6 shadow-xl">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    <span>🎨</span> Design Your Campaign
-                </h2>
-                
-                <form id="adForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Artist Name</label>
-                        <input type="text" id="artistName" value="Neon Horizon" required class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Track/Album Title</label>
-                        <input type="text" id="trackTitle" value="Midnight Drive" required class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Genre</label>
-                            <select id="genre" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
-                                <option value="Electronic">Electronic</option>
-                                <option value="Hip Hop">Hip Hop</option>
-                                <option value="Rock">Rock</option>
-                                <option value="Pop">Pop</option>
-                                <option value="Indie">Indie</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Ad Platform</label>
-                            <select id="platform" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
-                                <option value="Spotify">Spotify</option>
-                                <option value="Apple Music">Apple Music</option>
-                                <option value="YouTube">YouTube</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Call To Action</label>
-                        <select id="cta" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
-                            <option value="Stream Now">Stream Now</option>
-                            <option value="Pre-Save Track">Pre-Save Track</option>
-                            <option value="Watch Music Video">Watch Music Video</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Card Theme</label>
-                        <div class="flex gap-2 mt-1">
-                            <button type="button" onclick="setTheme('#a855f7')" class="w-6 h-6 rounded-full bg-purple-500 border-2 border-white ring-2 ring-purple-500/20"></button>
-                            <button type="button" onclick="setTheme('#ec4899')" class="w-6 h-6 rounded-full bg-pink-500 border border-transparent hover:scale-105 transition"></button>
-                            <button type="button" onclick="setTheme('#3b82f6')" class="w-6 h-6 rounded-full bg-blue-500 border border-transparent hover:scale-105 transition"></button>
-                            <button type="button" onclick="setTheme('#10b981')" class="w-6 h-6 rounded-full bg-emerald-500 border border-transparent hover:scale-105 transition"></button>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="w-full mt-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2.5 rounded-lg text-sm shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
-                        🚀 Launch Globally
-                    </button>
-                </form>
+            <p id="authSubtitle" class="text-center text-gray-400 text-sm mb-6">Create an account to securely build your ads</p>
+            
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Email Address</label>
+                    <input type="email" id="authEmail" required class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Password</label>
+                    <input type="password" id="authPassword" required minlength="6" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 text-white">
+                </div>
+                <button type="submit" id="authSubmitBtn" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2.5 rounded-lg text-sm shadow-lg hover:opacity-90 transition">
+                    Sign Up
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-xs text-gray-400">
+                <span id="authToggleText">Already have an account?</span>
+                <button type="button" id="authToggleBtn" class="text-purple-400 font-bold ml-1 hover:underline">Log In</button>
             </div>
+        </div>
+    </div>
 
-            <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-6">
-                <h3 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-2">
-                    <span class="h-2 w-2 rounded-full bg-purple-500 animate-ping"></span> Live Layout Preview
-                </h3>
-                <div id="previewCard" class="bg-slate-950 p-5 rounded-xl border-t-4 shadow-2xl transition-all duration-300" style="border-color: #a855f7">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span id="previewGenre" class="text-[10px] uppercase font-bold tracking-widest bg-white/10 px-2 py-0.5 rounded text-purple-300">Electronic</span>
-                            <h4 id="previewTrack" class="text-lg font-extrabold mt-1 truncate">Midnight Drive</h4>
-                            <p id="previewArtist" class="text-xs text-gray-400 truncate">by Neon Horizon</p>
-                        </div>
-                        <span id="previewPlatform" class="text-xs font-bold px-2 py-1 bg-slate-900 rounded border border-gray-800">Spotify</span>
-                    </div>
-                    <div class="h-32 bg-gradient-to-b from-slate-900 to-slate-800 rounded-lg flex items-center justify-center border border-gray-800/60 mb-4 overflow-hidden">
-                        <span class="text-3xl">🎵</span>
-                    </div>
-                    <button type="button" id="previewCta" class="w-full py-2 rounded-md text-xs font-bold text-center tracking-wide uppercase shadow transition-all bg-purple-500 text-white" style="background-color: #a855f7">
-                        Stream Now
+    <!-- ================= CORE AD DASHBOARD (Hidden until login) ================= -->
+    <div id="dashboardScreen" class="hidden">
+        <header class="border-b border-gray-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
+                    AMPLIFY<span class="text-white">AD</span>
+                </h1>
+                <div class="flex items-center gap-4">
+                    <span id="userBadge" class="text-xs text-gray-400 font-mono hidden sm:inline">User: email@domain.com</span>
+                    <button onclick="handleLogout()" class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs px-3 py-1.5 rounded-lg font-medium border border-gray-700 transition">
+                        🚪 Log Out
                     </button>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <div class="lg:col-span-7 space-y-6">
-            <div class="bg-slate-900/80 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col h-full">
-                <div class="sm:flex justify-between items-center pb-4 border-b border-gray-800 mb-6">
-                    <h2 class="text-xl font-bold flex items-center gap-2 mb-2 sm:mb-0">
-                        <span>🌍</span> Real-Time Database Feed
+        <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Side: Creator Form & Preview -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-slate-900/80 border border-gray-800 rounded-2xl p-6 shadow-xl">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><span>🎨</span> Design Campaign</h2>
+                    <form id="adForm" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Artist Name</label>
+                            <input type="text" id="artistName" value="My Project" required class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Track Title</label>
+                            <input type="text" id="trackTitle" value="First Release" required class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Genre</label>
+                                <select id="genre" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500">
+                                    <option value="Electronic">Electronic</option>
+                                    <option value="Hip Hop">Hip Hop</option>
+                                    <option value="Rock">Rock</option>
+                                    <option value="Pop">Pop</option>
+                                    <option value="Indie">Indie</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Platform</label>
+                                <select id="platform" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500">
+                                    <option value="Spotify">Spotify</option>
+                                    <option value="Apple Music">Apple Music</option>
+                                    <option value="YouTube">YouTube</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Call To Action</label>
+                            <select id="cta" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-purple-500">
+                                <option value="Stream Now">Stream Now</option>
+                                <option value="Pre-Save Track">Pre-Save Track</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Theme</label>
+                            <div class="flex gap-2 mt-1">
+                                <button type="button" onclick="setTheme('#a855f7')" class="w-6 h-6 rounded-full bg-purple-500 border-2 border-white"></button>
+                                <button type="button" onclick="setTheme('#ec4899')" class="w-6 h-6 rounded-full bg-pink-500"></button>
+                                <button type="button" onclick="setTheme('#3b82f6')" class="w-6 h-6 rounded-full bg-blue-500"></button>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full mt-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2.5 rounded-lg text-sm shadow-lg transition">
+                            🚀 Save Securely to Cloud
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Preview layout -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-6">
+                    <div id="previewCard" class="bg-slate-950 p-5 rounded-xl border-t-4" style="border-color: #a855f7">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span id="previewGenre" class="text-[10px] uppercase font-bold tracking-widest bg-white/10 px-2 py-0.5 rounded text-purple-300">Electronic</span>
+                                <h4 id="previewTrack" class="text-lg font-extrabold mt-1 truncate">First Release</h4>
+                                <p id="previewArtist" class="text-xs text-gray-400 truncate">by My Project</p>
+                            </div>
+                            <span id="previewPlatform" class="text-xs font-bold px-2 py-1 bg-slate-900 rounded border border-gray-800">Spotify</span>
+                        </div>
+                        <button type="button" id="previewCta" class="w-full py-2 rounded-md text-xs font-bold text-center text-white" style="background-color: #a855f7">Stream Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Your Locked Campaigns -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-slate-900/80 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col h-full">
+                    <h2 class="text-xl font-bold pb-4 border-b border-gray-800 mb-6 flex items-center gap-2">
+                        <span>🔒</span> Your Private Ad Vault
                     </h2>
-                    <div class="flex items-center gap-2">
-                        <select id="feedFilter" onchange="fetchCampaigns()" class="bg-slate-950 border border-gray-800 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:border-purple-500">
-                            <option value="All">All Genres</option>
-                            <option value="Electronic">Electronic</option>
-                            <option value="Hip Hop">Hip Hop</option>
-                            <option value="Rock">Rock</option>
-                            <option value="Pop">Pop</option>
-                            <option value="Indie">Indie</option>
-                        </select>
+                    <div id="globalFeed" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[580px] overflow-y-auto pr-1">
+                        <!-- User's isolated personal records run here -->
                     </div>
                 </div>
-
-                <div id="globalFeed" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[580px] overflow-y-auto pr-1">
-                    </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
+    <!-- Engine Script Execution -->
     <script>
-        // ⚠️ REPLACE THESE VALUES WITH YOUR COPIED SUPABASE CREDENTIALS
+        // ⚠️ INJECT YOUR COPIED SUPABASE CONFIG KEYS HERE
         const SUPABASE_URL = "https://pjigbhodnviuuchdmwws.supabase.co"; 
         const SUPABASE_ANON_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
 
-        // Initialize Supabase Client Connection
         const supabase = ::supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+        
         let currentThemeColor = '#a855f7';
+        let isSignUpMode = true;
 
-        // Wire form inputs to the Interactive Live Preview Card
-        const inputs = ['artistName', 'trackTitle', 'genre', 'platform', 'cta'];
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', updatePreview);
+        // Toggle Auth layout view setup logic
+        const authToggleBtn = document.getElementById('authToggleBtn');
+        authToggleBtn.addEventListener('click', () => {
+            isSignUpMode = !isSignUpMode;
+            document.getElementById('authSubmitBtn').innerText = isSignUpMode ? 'Sign Up' : 'Log In';
+            document.getElementById('authSubtitle').innerText = isSignUpMode ? 'Create an account to securely build your ads' : 'Welcome back! Log into your vault';
+            document.getElementById('authToggleText').innerText = isSignUpMode ? 'Already have an account?' : "Don't have an account?";
+            authToggleBtn.innerText = isSignUpMode ? 'Log In' : 'Sign Up';
         });
 
-        function updatePreview() {
-            document.getElementById('previewArtist').innerText = 'by ' + document.getElementById('artistName').value;
-            document.getElementById('previewTrack').innerText = document.getElementById('trackTitle').value;
-            document.getElementById('previewGenre').innerText = document.getElementById('genre').value;
-            document.getElementById('previewPlatform').innerText = document.getElementById('platform').value;
-            document.getElementById('previewCta').innerText = document.getElementById('cta').value;
+        // HANDLE USER AUTH (Signup & Login handler)
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            let result;
+
+            if (isSignUpMode) {
+                result = await supabase.auth.signUp({ email, password });
+                if(!result.error) alert("Check your email box for a confirmation link!");
+            } else {
+                result = await supabase.auth.signInWithPassword({ email, password });
+            }
+
+            if (result.error) {
+                alert("Auth Error: " + result.error.message);
+            } else if (result.data.user) {
+                checkUserSession();
+            }
+        });
+
+        // CHECK USER SESSION ON PAGE LOAD
+        async function checkUserSession() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('dashboardScreen').classList.remove('hidden');
+                document.getElementById('userBadge').innerText = `User: ${user.email}`;
+                fetchUserCampaigns();
+            } else {
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('dashboardScreen').classList.add('hidden');
+            }
         }
 
-        function setTheme(hexColor) {
-            currentThemeColor = hexColor;
-            document.getElementById('previewCard').style.borderColor = hexColor;
-            document.getElementById('previewCta').style.backgroundColor = hexColor;
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            checkUserSession();
         }
 
-        // FETCH DATA (Read from Cloud Database)
-        async function fetchCampaigns() {
+        // READ DATA (Only loads items matching user's secure authentication id)
+        async function fetchUserCampaigns() {
             const feedContainer = document.getElementById('globalFeed');
-            const currentFilter = document.getElementById('feedFilter').value;
+            const { data: campaigns, error } = await supabase
+                .from('campaigns')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            // Build structural query to Supabase 
-            let query = supabase.from('campaigns').select('*').order('created_at', { ascending: false });
-            
-            if (currentFilter !== 'All') {
-                query = query.eq('genre', currentFilter);
-            }
-
-            const { data: campaigns, error } = await query;
-
-            if (error) {
-                console.error("Error loading ads:", error);
-                return;
-            }
+            if (error) { console.error(error); return; }
 
             feedContainer.innerHTML = '';
-
             if(campaigns.length === 0) {
-                feedContainer.innerHTML = `<div class="col-span-2 text-center text-gray-500 py-12 text-sm">No live campaigns found. Be the first to launch one!</div>`;
+                feedContainer.innerHTML = `<div class="col-span-2 text-center text-gray-500 py-12 text-sm">No personal ads saved yet. Use the form to start crafting yours!</div>`;
                 return;
             }
 
             campaigns.forEach(ad => {
                 const card = document.createElement('div');
-                card.className = "bg-slate-950 p-4 rounded-xl border-t-4 border-gray-800 transition-all shadow-md flex flex-col justify-between";
+                card.className = "bg-slate-950 p-4 rounded-xl border-t-4 border-gray-800 flex flex-col justify-between";
                 card.style.borderColor = ad.color;
                 card.innerHTML = `
                     <div>
-                        <div class="flex justify-between items-start gap-2 mb-2">
-                            <span class="text-[9px] uppercase font-extrabold tracking-wider bg-white/5 px-1.5 py-0.5 rounded text-gray-400">${ad.genre}</span>
-                            <span class="text-[10px] text-gray-500 font-mono flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> ${ad.platform}</span>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[9px] uppercase font-bold tracking-wider bg-white/5 px-1.5 py-0.5 rounded text-gray-400">${ad.genre}</span>
+                            <span class="text-[10px] text-gray-500 font-mono">${ad.platform}</span>
                         </div>
                         <h4 class="text-sm font-bold truncate">${ad.track}</h4>
                         <p class="text-xs text-gray-400 truncate mb-3">by ${ad.artist}</p>
                     </div>
                     <div>
-                        <div class="text-[10px] bg-slate-900 p-2 rounded border border-gray-900 flex justify-between items-center mb-3">
-                            <span class="text-gray-500">Global Reach:</span>
-                            <span class="font-mono font-bold text-gray-300 font-bold text-emerald-400 font-mono">${ad.reaches} views</span>
+                        <div class="text-[10px] bg-slate-900 p-2 rounded border border-gray-900 flex justify-between items-center mb-2">
+                            <span class="text-gray-500">Track Analytics:</span>
+                            <span class="font-mono text-emerald-400">${ad.reaches} interactions</span>
                         </div>
-                        <button onclick="simulateClick(${ad.id}, ${ad.reaches})" class="block w-full py-1.5 rounded text-center text-[10px] uppercase font-bold tracking-wider text-white transition hover:opacity-90" style="background-color: ${ad.color}">
-                            ${ad.cta}
-                        </button>
+                        <button onclick="simulateClick(${ad.id}, ${ad.reaches})" class="w-full py-1 text-center text-[10px] uppercase font-bold text-white rounded opacity-80 hover:opacity-100" style="background-color: ${ad.color}">Test ${ad.cta}</button>
                     </div>
                 `;
                 feedContainer.appendChild(card);
             });
         }
 
-        // WRITE DATA (Save to Cloud Database)
+        // SAVE DATA
         document.getElementById('adForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const newCampaign = {
                 artist: document.getElementById('artistName').value,
                 track: document.getElementById('trackTitle').value,
@@ -227,38 +254,40 @@
                 platform: document.getElementById('platform').value,
                 cta: document.getElementById('cta').value,
                 color: currentThemeColor,
-                reaches: Math.floor(Math.random() * 50) + 10 // Start with some initial organic mock views
+                reaches: 0
             };
 
             const { error } = await supabase.from('campaigns').insert([newCampaign]);
-
-            if (error) {
-                alert("Database Error: " + error.message);
-            } else {
-                // Clear the form and reload feed
+            if (error) alert(error.message);
+            else {
                 document.getElementById('trackTitle').value = '';
                 updatePreview();
-                fetchCampaigns();
+                fetchUserCampaigns();
             }
         });
 
-        // UPDATE DATA (Update views in Database when someone interacts)
         async function simulateClick(adId, currentReaches) {
-            const { error } = await supabase
-                .from('campaigns')
-                .update({ reaches: currentReaches + 1 })
-                .eq('id', adId);
-
-            if (!error) {
-                fetchCampaigns(); // Refresh to update view counters immediately
-            }
+            await supabase.from('campaigns').update({ reaches: currentReaches + 1 }).eq('id', adId);
+            fetchUserCampaigns();
         }
 
-        // Run network fetch on page launch
-        fetchCampaigns();
+        // Wire layout preview functions
+        inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+        function updatePreview() {
+            document.getElementById('previewArtist').innerText = 'by ' + document.getElementById('artistName').value;
+            document.getElementById('previewTrack').innerText = document.getElementById('trackTitle').value;
+            document.getElementById('previewGenre').innerText = document.getElementById('genre').value;
+            document.getElementById('previewPlatform').innerText = document.getElementById('platform').value;
+            document.getElementById('previewCta').innerText = document.getElementById('cta').value;
+        }
+        function setTheme(hexColor) {
+            currentThemeColor = hexColor;
+            document.getElementById('previewCard').style.borderColor = hexColor;
+            document.getElementById('previewCta').style.backgroundColor = hexColor;
+        }
 
-        // Automatically pull fresh ads from the database every 10 seconds 
-        setInterval(fetchCampaigns, 10000);
+        // Initialize session on page mount
+        checkUserSession();
     </script>
 </body>
 </html>
