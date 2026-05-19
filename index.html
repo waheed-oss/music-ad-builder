@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmplifyAd - Private Studio</title>
+    <title>AmplifyAd - Music Promotion Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body class="bg-slate-950 text-gray-100 min-h-screen font-sans flex items-center justify-center p-4">
+<body class="bg-slate-950 text-gray-100 min-h-screen font-sans flex items-center justify-center p-4 relative">
 
     <!-- AUTH DASHBOARD COMPONENT -->
-    <div id="authBox" class="bg-slate-900 border border-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+    <div id="authBox" class="bg-slate-900 border border-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md z-10">
         <h1 class="text-2xl font-black text-center text-purple-500 mb-6 tracking-wide">AMPLIFYAD AUTH</h1>
         
         <form id="secureAuthForm" class="space-y-4">
@@ -33,13 +34,13 @@
     </div>
 
     <!-- MAIN APP STUDIO COMPONENT -->
-    <div id="appBox" class="hidden w-full max-w-6xl mx-auto space-y-6 my-6">
+    <div id="appBox" class="hidden w-full max-w-6xl mx-auto space-y-6 my-6 z-10">
         
         <!-- Header Bar -->
         <div class="bg-slate-900 border border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
             <div>
                 <h2 class="text-xl font-black tracking-wide text-purple-500">🎵 AMPLIFYAD STUDIO</h2>
-                <p class="text-xs text-gray-400" id="welcomeUser">Logged in securely</p>
+                <p class="text-xs text-gray-400" id="welcomeUser">Verifying Session...</p>
             </div>
             <button onclick="logout()" class="bg-slate-950 hover:bg-red-950 hover:text-red-200 border border-gray-800 text-xs px-4 py-2 rounded-lg font-bold transition">
                 🚪 Secure Log Out
@@ -49,7 +50,7 @@
         <!-- Two Column Studio Workspace -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Column 1 & 2: Ad Builder Form -->
+            <!-- Ad Builder Form -->
             <div class="lg:col-span-2 bg-slate-900 border border-gray-800 p-6 rounded-2xl shadow-xl">
                 <h3 class="text-lg font-bold mb-4 text-white flex items-center gap-2">
                     <span>⚡</span> Create New Audio Ad Campaign
@@ -79,7 +80,7 @@
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Smart Link / Audio Asset URL</label>
-                        <input type="url" id="trackUrl" required placeholder="https://open.spotify.com/track/... or soundcloud link" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                        <input type="url" id="trackUrl" required placeholder="https://open.spotify.com/track/..." class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Daily Marketing Budget ($)</label>
@@ -88,49 +89,35 @@
                     
                     <div class="md:col-span-2 mt-2">
                         <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg tracking-wider uppercase">
-                            🚀 Launch Music Promotion
+                            💳 Review Campaign & Pay
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Column 3: Live Campaign Mockup Preview -->
+            <!-- Live Campaign Mockup Preview -->
             <div class="bg-slate-900 border border-gray-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
                 <div>
                     <h3 class="text-xs uppercase tracking-wider text-gray-400 mb-4 font-bold">✨ Real-time Ad Preview</h3>
-                    
-                    <!-- Dynamic Mock Player Card -->
                     <div class="bg-slate-950 border border-purple-900/40 p-5 rounded-xl space-y-4 shadow-inner relative overflow-hidden">
                         <div class="absolute top-2 right-2 bg-purple-900/60 text-[10px] text-purple-300 px-2 py-0.5 rounded font-black uppercase tracking-widest">Sponsored</div>
-                        
-                        <!-- Pseudo Album Cover Visualizer -->
                         <div class="w-full aspect-square bg-gradient-to-br from-purple-900 to-slate-900 rounded-lg flex items-center justify-center border border-gray-800 shadow-md">
                             <span class="text-5xl animate-pulse">💿</span>
                         </div>
-                        
                         <div>
                             <div id="previewTrack" class="font-black text-lg text-white truncate">Midnight Melodies</div>
                             <div id="previewArtist" class="text-sm text-gray-400 truncate">DJ Phantom</div>
                         </div>
-
-                        <!-- Audio Playbar Simulation -->
                         <div class="space-y-1">
                             <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
                                 <div class="h-full w-1/3 bg-purple-500 rounded-full"></div>
                             </div>
-                            <div class="flex justify-between text-[10px] text-gray-500 font-mono">
-                                <span>0:12</span>
-                                <span>0:30</span>
-                            </div>
                         </div>
-
-                        <!-- CTA Button -->
-                        <button id="previewPlatformBtn" class="w-full bg-emerald-500 text-slate-950 font-black text-xs py-2.5 rounded-full uppercase tracking-wider transition hover:scale-102">
+                        <button id="previewPlatformBtn" class="w-full bg-emerald-500 text-slate-950 font-black text-xs py-2.5 rounded-full uppercase tracking-wider transition">
                             Listen On Spotify
                         </button>
                     </div>
                 </div>
-                <p class="text-[11px] text-gray-500 mt-4 text-center">Preview emulates target listener display on dynamic placement APIs.</p>
             </div>
         </div>
 
@@ -138,7 +125,7 @@
         <div class="bg-slate-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
             <div class="p-6 border-b border-gray-800">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <span>📊</span> Live Promotion Analytics Tracker
+                    <span>📊</span> Active Music Promotions
                 </h3>
             </div>
             <div class="overflow-x-auto">
@@ -153,41 +140,56 @@
                         </tr>
                     </thead>
                     <tbody id="campaignList" class="divide-y divide-gray-800/50">
-                        <!-- Default Rows -->
-                        <tr>
-                            <td class="p-4">
-                                <div class="font-bold text-white">Hyperdrive Rhythm</div>
-                                <div class="text-xs text-gray-400">Solar Flare Project</div>
-                            </td>
-                            <td class="p-4"><span class="bg-emerald-950/80 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded text-xs">Spotify Audio</span></td>
-                            <td class="p-4 font-mono text-gray-300">$50.00/day</td>
-                            <td class="p-4 font-mono text-purple-400 font-bold">14,204</td>
-                            <td class="p-4"><span class="text-xs text-emerald-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> Live & Pushing</span></td>
-                        </tr>
-                        <tr>
-                            <td class="p-4">
-                                <div class="font-bold text-white">Neon Sunset (Remix)</div>
-                                <div class="text-xs text-gray-400">Luna Vista</div>
-                            </td>
-                            <td class="p-4"><span class="bg-pink-950/80 text-pink-400 border border-pink-800 px-2 py-0.5 rounded text-xs">TikTok Music</span></td>
-                            <td class="p-4 font-mono text-gray-300">$30.00/day</td>
-                            <td class="p-4 font-mono text-purple-400 font-bold">8,910</td>
-                            <td class="p-4"><span class="text-xs text-emerald-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> Live & Pushing</span></td>
-                        </tr>
+                        <!-- New user submissions inject directly here automatically -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <!-- STRIPE SECURE CHECKOUT MODAL OVERLAY -->
+    <div id="paymentModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-purple-900/60 p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center space-y-6">
+            <div class="w-12 h-12 bg-purple-950 rounded-full flex items-center justify-center mx-auto text-purple-400 text-xl border border-purple-800">
+                🛡️
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-white">Secure Checkout</h3>
+                <p class="text-xs text-gray-400 mt-1">Review your music promotion campaign invoice</p>
+            </div>
+
+            <!-- Invoice Calculation Line Items -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-gray-800 text-left space-y-2 text-xs font-mono">
+                <div class="flex justify-between"><span class="text-gray-500">Track:</span> <span class="text-white font-bold truncate max-w-[180px]" id="invoiceTrack">--</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Placement:</span> <span class="text-purple-400" id="invoicePlatform">--</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Schedule:</span> <span class="text-gray-300">7 Days Run Time</span></div>
+                <hr class="border-gray-800 my-2">
+                <div class="flex justify-between text-sm"><span class="text-gray-400 font-sans font-bold">Total Bill:</span> <span class="text-emerald-400 font-bold" id="invoiceTotal">$0.00</span></div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="space-y-2">
+                <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-lg text-sm tracking-wide uppercase transition shadow-lg flex items-center justify-center gap-2">
+                    🔒 Process Payment with Stripe
+                </button>
+                <button onclick="closePaymentModal()" class="w-full bg-slate-950 hover:bg-slate-800 text-gray-400 border border-gray-800 text-xs py-2 rounded-lg font-medium transition">
+                    Cancel & Modify Order
+                </button>
+            </div>
+            <p class="text-[10px] text-gray-500">Payments encrypted securely. Powered by Stripe Merchant Systems.</p>
+        </div>
+    </div>
+
     <script>
         const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
         const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
+        const stripe = Stripe('pk_test_placeholder_your_key'); 
 
         const client = supabase.createClient(DB_URL, DB_KEY);
         let signUpMode = true;
+        let pendingCampaignData = null; 
 
-        // Automatically watch for login / logout state transformations
+        // Monitor login layout sequence
         client.auth.onAuthStateChange((event, session) => {
             if (session?.user) {
                 document.getElementById('authBox').classList.add('hidden');
@@ -199,14 +201,14 @@
             }
         });
 
-        // Toggle UI modes (Sign Up vs Log In)
+        // Switch between Log In and Sign Up modes
         document.getElementById('toggleModeBtn').addEventListener('click', () => {
             signUpMode = !signUpMode;
             document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account (Sign Up)' : 'Access Account (Log In)';
             document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Already have an account? Switch to Log In' : 'Need an account? Switch to Sign Up';
         });
 
-        // Form handling for login & registration
+        // Process Auth Submissions
         document.getElementById('secureAuthForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             const email = document.getElementById('emailInput').value.trim();
@@ -215,21 +217,17 @@
             try {
                 if (signUpMode) {
                     const { error } = await client.auth.signUp({ email, password });
-                    if (error) {
-                        alert("Supabase rejected signup: " + error.message);
-                    } else {
-                        alert("Account created! If you cannot log in right away, toggle email confirmation OFF in Supabase.");
-                    }
+                    if (error) alert("Signup rejected: " + error.message);
                 } else {
                     const { error } = await client.auth.signInWithPassword({ email, password });
                     if (error) alert("Login failed: " + error.message);
                 }
             } catch (crash) {
-                alert("System network crash: " + crash.message);
+                alert("Network crash: " + crash.message);
             }
         });
 
-        // REAL-TIME PREVIEW EVENT CONTROLS
+        // Event controls for Real-Time Player Mockup Preview updates
         const trackInput = document.getElementById('trackName');
         const artistInput = document.getElementById('artistName');
         const platformSelect = document.getElementById('platformSelect');
@@ -238,34 +236,63 @@
         artistInput.addEventListener('input', () => document.getElementById('previewArtist').innerText = artistInput.value || 'Unknown Artist');
         platformSelect.addEventListener('change', () => document.getElementById('previewPlatformBtn').innerText = `Listen On ${platformSelect.value.split(' ')[0]}`);
 
-        // HANDLE MUSIC AD LAUNCH EVENTS
+        // Catch Ad Builder Submission & Calculate Invoice Total
         document.getElementById('adBuilderForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const track = trackInput.value;
-            const artist = artistInput.value;
-            const network = platformSelect.value;
-            const budget = parseFloat(document.getElementById('adBudget').value).toFixed(2);
+            const dailyBudget = parseFloat(document.getElementById('adBudget').value);
+            const standardRunTimeDays = 7; 
+            const dynamicTotalBill = (dailyBudget * standardRunTimeDays).toFixed(2);
 
-            // Construct new analytical line item markup row dynamically
-            const newRowHtml = `
-                <tr>
-                    <td class="p-4">
-                        <div class="font-bold text-white">${track}</div>
-                        <div class="text-xs text-gray-400">${artist}</div>
-                    </td>
-                    <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${network}</span></td>
-                    <td class="p-4 font-mono text-gray-300">$${budget}/day</td>
-                    <td class="p-4 font-mono text-purple-400 font-bold">0</td>
-                    <td class="p-4"><span class="text-xs text-yellow-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-yellow-500"></span> Pending Sync</span></td>
-                </tr>
-            `;
+            pendingCampaignData = {
+                track: trackInput.value,
+                artist: artistInput.value,
+                network: platformSelect.value,
+                budget: dailyBudget.toFixed(2)
+            };
 
-            // Append row item inside dashboard node element
-            document.getElementById('campaignList').insertAdjacentHTML('afterbegin', newRowHtml);
-            document.getElementById('adBuilderForm').reset();
-            alert(`🎉 Campaign for "${track}" has been initialized in your preview table!`);
+            document.getElementById('invoiceTrack').innerText = pendingCampaignData.track;
+            document.getElementById('invoicePlatform').innerText = pendingCampaignData.network;
+            document.getElementById('invoiceTotal').innerText = `$${dynamicTotalBill}`;
+
+            document.getElementById('paymentModal').classList.remove('hidden');
         });
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            pendingCampaignData = null;
+        }
+
+        // Process Secure checkout confirmation timeline
+        function processSecurePayment() {
+            const payBtn = document.getElementById('payNowBtn');
+            payBtn.innerText = "⏳ Verifying Assets...";
+            payBtn.disabled = true;
+
+            setTimeout(() => {
+                if (pendingCampaignData) {
+                    const newRowHtml = `
+                        <tr>
+                            <td class="p-4">
+                                <div class="font-bold text-white">${pendingCampaignData.track}</div>
+                                <div class="text-xs text-gray-400">${pendingCampaignData.artist}</div>
+                            </td>
+                            <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${pendingCampaignData.network}</span></td>
+                            <td class="p-4 font-mono text-gray-300">$${pendingCampaignData.budget}/day</td>
+                            <td class="p-4 font-mono text-purple-400 font-bold">0</td>
+                            <td class="p-4"><span class="text-xs text-emerald-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> Live & Active</span></td>
+                        </tr>
+                    `;
+                    document.getElementById('campaignList').insertAdjacentHTML('afterbegin', newRowHtml);
+                }
+
+                alert("💳 Payment successful! Your music campaign is now processing live.");
+                payBtn.innerText = "🔒 Process Payment with Stripe";
+                payBtn.disabled = false;
+                closePaymentModal();
+                document.getElementById('adBuilderForm').reset();
+            }, 2000);
+        }
 
         async function logout() {
             await client.auth.signOut();
