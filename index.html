@@ -32,87 +32,98 @@
         </div>
     </div>
 
-    <!-- MAIN APP BACKSTAGE COMPONENT (HIDDEN BY DEFAULT) -->
-    <div id="appBox" class="hidden text-center max-w-md mx-auto">
-        <div class="bg-slate-900 border border-gray-800 p-8 rounded-2xl shadow-xl">
-            <span class="text-4xl">🎉</span>
-            <h2 class="text-2xl font-bold mt-4 mb-2">Access Granted!</h2>
-            <p class="text-sm text-gray-400 mb-6" id="welcomeUser">Your studio vault is securely open.</p>
-            <button onclick="logout()" class="bg-gray-800 hover:bg-gray-700 text-xs px-4 py-2 rounded-lg font-bold border border-gray-700 transition">
+    <!-- MAIN APP BACKSTAGE COMPONENT -->
+    <div id="appBox" class="hidden w-full max-w-4xl mx-auto space-y-6">
+        <!-- Header Bar -->
+        <div class="bg-slate-900 border border-gray-800 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+            <div>
+                <h2 class="text-lg font-bold text-purple-400">🚀 AmplifyAd Studio</h2>
+                <p class="text-xs text-gray-400" id="welcomeUser">Logged in securely</p>
+            </div>
+            <button onclick="logout()" class="bg-red-950 hover:bg-red-900 text-red-200 border border-red-800 text-xs px-4 py-2 rounded-lg font-bold transition">
                 🚪 Secure Log Out
             </button>
+        </div>
+
+        <!-- 🛠️ YOUR ACTUAL STUDIO CONTENT GOES HERE 🛠️ -->
+        <div class="bg-slate-900 border border-gray-800 p-8 rounded-2xl shadow-xl text-center">
+            <span class="text-5xl">🎉</span>
+            <h3 class="text-2xl font-black mt-4 mb-2 text-white">Access Granted!</h3>
+            <p class="text-sm text-gray-400 max-w-md mx-auto mb-6">
+                Your studio vault is securely open. You can now delete this placeholder card and start building your analytics, tools, or tables right here.
+            </p>
+            
+            <!-- Quick Grid Placeholder Example -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mt-8">
+                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
+                    <div class="text-xs text-gray-500 uppercase font-bold">Total Campaigns</div>
+                    <div class="text-xl font-black text-purple-400 mt-1">12 Active</div>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
+                    <div class="text-xs text-gray-500 uppercase font-bold">Ad Spend</div>
+                    <div class="text-xl font-black text-emerald-400 mt-1">$1,240.50</div>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
+                    <div class="text-xs text-gray-500 uppercase font-bold">Total Clicks</div>
+                    <div class="text-xl font-black text-blue-400 mt-1">48.2k</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // REPLACE THESE TWO STRINGS WITH YOUR COPIED SUPABASE VALUES
         const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
         const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
 
-        // FIXED: Removed the invalid "::" syntax error here
         const client = supabase.createClient(DB_URL, DB_KEY);
         let signUpMode = true;
 
-        // Toggle configuration modes cleanly
+        // Automatically watch for login / logout state transformations
+        client.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                document.getElementById('authBox').classList.add('hidden');
+                document.getElementById('appBox').classList.remove('hidden');
+                document.getElementById('welcomeUser').innerText = `Logged in securely as: ${session.user.email}`;
+            } else {
+                document.getElementById('authBox').classList.remove('hidden');
+                document.getElementById('appBox').classList.add('hidden');
+            }
+        });
+
+        // Toggle UI modes (Sign Up vs Log In)
         document.getElementById('toggleModeBtn').addEventListener('click', () => {
             signUpMode = !signUpMode;
             document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account (Sign Up)' : 'Access Account (Log In)';
             document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Already have an account? Switch to Log In' : 'Need an account? Switch to Sign Up';
         });
 
-        // Intercept form submission to apply custom cloud operations safely
+        // Intercept form submission
         document.getElementById('secureAuthForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Critical: stops the page from refreshing
+            event.preventDefault();
             
             const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passwordInput').value;
 
-            if (DB_URL.includes("your-project-id")) {
-                alert("Stop! You forgot to paste your actual Supabase URL and Key.");
-                return;
-            }
-
             try {
                 if (signUpMode) {
-                    const { data, error } = await client.auth.signUp({ email, password });
+                    const { error } = await client.auth.signUp({ email, password });
                     if (error) {
                         alert("Supabase rejected signup: " + error.message);
                     } else {
-                        alert("Account created successfully! If you are stuck, verify email confirmations are switched OFF in Supabase.");
-                        syncSession();
+                        alert("Account created successfully! If you can't log in right away, make sure 'Confirm Email' is disabled in your Supabase Auth settings.");
                     }
                 } else {
-                    const { data, error } = await client.auth.signInWithPassword({ email, password });
-                    if (error) {
-                        alert("Login failed: " + error.message);
-                    } else {
-                        syncSession();
-                    }
+                    const { error } = await client.auth.signInWithPassword({ email, password });
+                    if (error) alert("Login failed: " + error.message);
                 }
             } catch (crash) {
                 alert("System network crash: " + crash.message);
             }
         });
 
-        async function syncSession() {
-            const { data: { user } } = await client.auth.getUser();
-            if (user) {
-                document.getElementById('authBox').classList.add('hidden');
-                document.getElementById('appBox').classList.remove('hidden');
-                document.getElementById('welcomeUser').innerText = `Logged in securely as: ${user.email}`;
-            } else {
-                document.getElementById('authBox').classList.remove('hidden');
-                document.getElementById('appBox').classList.add('hidden');
-            }
-        }
-
         async function logout() {
             await client.auth.signOut();
-            syncSession();
         }
-
-        // Initialize active checking on boot layout loading sequence
-        syncSession();
     </script>
 </body>
 </html>
