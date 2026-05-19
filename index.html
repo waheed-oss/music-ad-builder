@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -140,7 +140,7 @@
                         </tr>
                     </thead>
                     <tbody id="campaignList" class="divide-y divide-gray-800/50">
-                        <!-- New user submissions inject directly here automatically -->
+                        <!-- Active campaigns show here -->
                     </tbody>
                 </table>
             </div>
@@ -183,7 +183,6 @@
     <script>
         const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
         const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
-        const stripe = Stripe('pk_test_placeholder_your_key'); 
 
         const client = supabase.createClient(DB_URL, DB_KEY);
         let signUpMode = true;
@@ -263,35 +262,29 @@
             pendingCampaignData = null;
         }
 
-        // Process Secure checkout confirmation timeline
+        // FIXED: Replaced simulated code execution with explicit Stripe Payment Link routing
         function processSecurePayment() {
             const payBtn = document.getElementById('payNowBtn');
-            payBtn.innerText = "⏳ Verifying Assets...";
+            payBtn.innerText = "🚀 Redirecting to Stripe...";
             payBtn.disabled = true;
 
-            setTimeout(() => {
-                if (pendingCampaignData) {
-                    const newRowHtml = `
-                        <tr>
-                            <td class="p-4">
-                                <div class="font-bold text-white">${pendingCampaignData.track}</div>
-                                <div class="text-xs text-gray-400">${pendingCampaignData.artist}</div>
-                            </td>
-                            <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${pendingCampaignData.network}</span></td>
-                            <td class="p-4 font-mono text-gray-300">$${pendingCampaignData.budget}/day</td>
-                            <td class="p-4 font-mono text-purple-400 font-bold">0</td>
-                            <td class="p-4"><span class="text-xs text-emerald-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> Live & Active</span></td>
-                        </tr>
-                    `;
-                    document.getElementById('campaignList').insertAdjacentHTML('afterbegin', newRowHtml);
-                }
+            const platform = pendingCampaignData.network;
+            
+            // ⚠️ PASTE YOUR COPIED STRIPE PAYMENT LINKS FROM YOUR DASHBOARD HERE:
+            let stripeUrl = "https://buy.stripe.com/test_placeholder_fallback_link"; 
 
-                alert("💳 Payment successful! Your music campaign is now processing live.");
-                payBtn.innerText = "🔒 Process Payment with Stripe";
-                payBtn.disabled = false;
-                closePaymentModal();
-                document.getElementById('adBuilderForm').reset();
-            }, 2000);
+            if (platform === "Spotify Audio") {
+                stripeUrl = "https://buy.stripe.com/test_placeholder_spotify"; 
+            } else if (platform === "TikTok Music") {
+                stripeUrl = "https://buy.stripe.com/test_placeholder_tiktok";
+            } else if (platform === "Instagram Reels") {
+                stripeUrl = "https://buy.stripe.com/test_placeholder_instagram";
+            } else if (platform === "YouTube Shorts") {
+                stripeUrl = "https://buy.stripe.com/test_placeholder_youtube";
+            }
+
+            // Immediately hands off the session checkout to Stripe's secure endpoints
+            window.location.href = stripeUrl;
         }
 
         async function logout() {
