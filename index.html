@@ -234,7 +234,7 @@
 
         async function processSecurePayment() {
             const totalBill = document.getElementById('invoiceTotal').innerText.trim();
-            const gpayUrl = `upi://pay?pa=yourmerchantid@okaxis&pn=AmplifyAdStudio&am=${totalBill}&cu=INR`;
+            const gpayUrl = `upi://pay?pa=8899168241@fam&pn=AmplifyAdStudio&am=${totalBill}&cu=INR`;
 
             // 1. TRIGGER GPAY IMMEDIATELY (Doesn't wait for DB)
             window.location.href = gpayUrl;
