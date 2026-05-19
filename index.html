@@ -3,364 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmplifyAd - Music Promotion Studio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>AmplifyAd Studio - Music Ad Builder</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --card-bg: #1f2833;
+            --text-color: #c5a059;
+            --accent-color: #45a29e;
+            --button-color: #66fcf1;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: var(--button-color);
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #c5a059;
+            font-size: 14px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background-color: #0b0c10;
+            border: 1px solid #45a29e;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--button-color);
+        }
+        .btn-submit {
+            width: 100%;
+            background-color: #2ecc71;
+            color: #0b0c10;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s ease;
+        }
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-gray-100 min-h-screen font-sans flex items-center justify-center p-4 relative">
+<body>
 
-    <!-- AUTH DASHBOARD COMPONENT -->
-    <div id="authBox" class="bg-slate-900 border border-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-md z-10">
-        <h1 class="text-2xl font-black text-center text-purple-500 mb-6 tracking-wide">AMPLIFYAD AUTH</h1>
-        
-        <form id="secureAuthForm" class="space-y-4">
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Email</label>
-                <input type="email" id="emailInput" required class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-            </div>
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Password</label>
-                <input type="password" id="passwordInput" required minlength="6" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-            </div>
-            <button type="submit" id="submitBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 rounded-lg text-sm transition shadow-lg">
-                Create Account (Sign Up)
-            </button>
-        </form>
-        
-        <div class="mt-6 text-center text-xs text-gray-400">
-            <button type="button" id="toggleModeBtn" class="text-purple-400 hover:underline font-medium">Already have an account? Switch to Log In</button>
+<div class="container">
+    <h2>AmplifyAd Studio</h2>
+    <form id="adBuilderForm">
+        <div class="form-group">
+            <label for="email">User Email</label>
+            <input type="email" id="email" placeholder="yourname@example.com" required>
         </div>
-    </div>
-
-    <!-- MAIN APP STUDIO COMPONENT -->
-    <div id="appBox" class="hidden w-full max-w-6xl mx-auto space-y-6 my-6 z-10">
         
-        <!-- Header Bar -->
-        <div class="bg-slate-900 border border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
-            <div>
-                <h2 class="text-xl font-black tracking-wide text-purple-500">🎵 AMPLIFYAD STUDIO</h2>
-                <p class="text-xs text-gray-400" id="welcomeUser">Verifying Session...</p>
-            </div>
-            <button onclick="logout()" class="bg-slate-950 hover:bg-red-950 hover:text-red-200 border border-gray-800 text-xs px-4 py-2 rounded-lg font-bold transition">
-                🚪 Secure Log Out
-            </button>
+        <div class="form-group">
+            <label for="track">Track Name</label>
+            <input type="text" id="track" placeholder="Enter song title" required>
         </div>
 
-        <!-- Two Column Studio Workspace -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="form-group">
+            <label for="artist">Artist Name</label>
+            <input type="text" id="artist" placeholder="Enter artist name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="network">Target Advertising Network</label>
+            <select id="network" required>
+                <option value="Instagram">Instagram Ads</option>
+                <option value="Spotify">Spotify Audio Ads</option>
+                <option value="YouTube">YouTube Music Ads</option>
+                <option value="TikTok">TikTok Sound Ads</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="budget">Daily Budget (INR)</label>
+            <input type="number" id="budget" placeholder="e.g. 500" min="1" required>
+        </div>
+
+        <button type="submit" class="btn-submit">SAVING & OPENING GPAY...</button>
+    </form>
+</div>
+
+<script>
+    // 1. Initialize Supabase Connection
+    // REMEMBER: Replace these placeholder strings with your actual Supabase URL and Anon Key
+    const SUPABASE_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
+    
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. Attach Event Listener to Form Submit
+    document.getElementById('adBuilderForm').addEventListener('submit', handlePaymentAndSave);
+
+    async function handlePaymentAndSave(event) {
+        event.preventDefault(); // Keep page from reloading instantly
+
+        // Gather UI Input values
+        const userEmail = document.getElementById('email').value;
+        const trackName = document.getElementById('track').value;
+        const artistName = document.getElementById('artist').value;
+        const selectedNetwork = document.getElementById('network').value;
+        const dailyBudget = document.getElementById('budget').value;
+
+        try {
+            // Send data cleanly to Supabase. NO .select() used here to prevent RLS cache errors!
+            const { error } = await supabase
+                .from('campaigns')
+                .insert([
+                    { 
+                        user_email: userEmail, 
+                        track: trackName, 
+                        artist: artistName, 
+                        network: selectedNetwork, 
+                        budget: parseFloat(dailyBudget)
+                    }
+                ]);
+
+            // Catch any unexpected database policy issues
+            if (error) {
+                console.error("Supabase Error Context:", error);
+                alert(`Database engine synchronization failure: ${error.message}`);
+                return; // Stop code right here so it doesn't try opening GPay with failed logs
+            }
+
+            // SUCCESS PATH: Database accepted row transaction seamlessly
+            console.log("Telemetry synced securely! Spawning deep-link layout...");
             
-            <!-- Ad Builder Form -->
-            <div class="lg:col-span-2 bg-slate-900 border border-gray-800 p-6 rounded-2xl shadow-xl">
-                <h3 class="text-lg font-bold mb-4 text-white flex items-center gap-2">
-                    <span>⚡</span> Create New Audio Ad Campaign
-                </h3>
-                
-                <form id="adBuilderForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Track/Song Name</label>
-                        <input type="text" id="trackName" required placeholder="e.g., Midnight Melodies" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Artist Name</label>
-                        <input type="text" id="artistName" required placeholder="e.g., DJ Phantom" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Target Network</label>
-                        <select id="platformSelect" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-                            <option value="Spotify Audio">Spotify Ad Network</option>
-                            <option value="TikTok Music">TikTok Sound Drop</option>
-                            <option value="Instagram Reels">Instagram Audio Push</option>
-                            <option value="YouTube Shorts">YouTube Shorts Promo</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Target Music Genre</label>
-                        <input type="text" id="targetGenre" placeholder="e.g., Hip Hop, Synthwave, Pop" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Smart Link / Audio Asset URL</label>
-                        <input type="url" id="trackUrl" required placeholder="https://open.spotify.com/track/..." class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Daily Marketing Budget (Amount)</label>
-                        <input type="number" id="adBudget" min="5" value="25" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
-                    </div>
-                    
-                    <div class="md:col-span-2 mt-2">
-                        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg tracking-wider uppercase">
-                            📱 Review Campaign & Pay via GPay
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Live Campaign Mockup Preview -->
-            <div class="bg-slate-900 border border-gray-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
-                <div>
-                    <h3 class="text-xs uppercase tracking-wider text-gray-400 mb-4 font-bold">✨ Real-time Ad Preview</h3>
-                    <div class="bg-slate-950 border border-purple-900/40 p-5 rounded-xl space-y-4 shadow-inner relative overflow-hidden">
-                        <div class="absolute top-2 right-2 bg-purple-900/60 text-[10px] text-purple-300 px-2 py-0.5 rounded font-black uppercase tracking-widest">Sponsored</div>
-                        <div class="w-full aspect-square bg-gradient-to-br from-purple-900 to-slate-900 rounded-lg flex items-center justify-center border border-gray-800 shadow-md">
-                            <span class="text-5xl animate-pulse">💿</span>
-                        </div>
-                        <div>
-                            <div id="previewTrack" class="font-black text-lg text-white truncate">Midnight Melodies</div>
-                            <div id="previewArtist" class="text-sm text-gray-400 truncate">DJ Phantom</div>
-                        </div>
-                        <div class="space-y-1">
-                            <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                                <div class="h-full w-1/3 bg-purple-500 rounded-full"></div>
-                            </div>
-                        </div>
-                        <button id="previewPlatformBtn" class="w-full bg-emerald-500 text-slate-950 font-black text-xs py-2.5 rounded-full uppercase tracking-wider transition">
-                            Listen On Spotify
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Panel: Campaign Tracker Analytics Grid -->
-        <div class="bg-slate-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-gray-800">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <span>📊</span> Active Music Promotions
-                </h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-950 text-gray-400 text-xs uppercase tracking-wider border-b border-gray-800">
-                            <th class="p-4">Campaign Track / Artist</th>
-                            <th class="p-4">Platform Placement</th>
-                            <th class="p-4">Daily Budget</th>
-                            <th class="p-4">Est. Streams Generated</th>
-                            <th class="p-4">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="campaignList" class="divide-y divide-gray-800/50">
-                        <!-- Database rows pull and map directly here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- GOOGLE PAY / UPI SECURE CHECKOUT MODAL OVERLAY -->
-    <div id="paymentModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-900 border border-purple-900/60 p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center space-y-6">
-            <div class="w-12 h-12 bg-emerald-950 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-xl border border-emerald-800">
-                📱
-            </div>
-            <div>
-                <h3 class="text-lg font-black text-white">Google Pay Checkout</h3>
-                <p class="text-xs text-gray-400 mt-1">Review your music promotion campaign invoice</p>
-            </div>
-
-            <!-- Invoice Calculation Line Items -->
-            <div class="bg-slate-950 p-4 rounded-xl border border-gray-800 text-left space-y-2 text-xs font-mono">
-                <div class="flex justify-between"><span class="text-gray-500">Track:</span> <span class="text-white font-bold truncate max-w-[180px]" id="invoiceTrack">--</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">Placement:</span> <span class="text-purple-400" id="invoicePlatform">--</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">Schedule:</span> <span class="text-gray-300">7 Days Run Time</span></div>
-                <hr class="border-gray-800 my-2">
-                <div class="flex justify-between text-sm"><span class="text-gray-400 font-sans font-bold">Total Bill:</span> <span class="text-emerald-400 font-bold" id="invoiceTotal">0.00</span></div>
-            </div>
-
-            <!-- Action buttons -->
-            <div class="space-y-2">
-                <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-lg text-sm tracking-wide uppercase transition shadow-lg flex items-center justify-center gap-2">
-                    🔒 Process Payment with GPay
-                </button>
-                <button onclick="closePaymentModal()" class="w-full bg-slate-950 hover:bg-slate-800 text-gray-400 border border-gray-800 text-xs py-2 rounded-lg font-medium transition">
-                    Cancel & Modify Order
-                </button>
-            </div>
-            <p class="text-[10px] text-gray-500">Payments routed securely. Direct bank-to-bank via UPI network protocols.</p>
-        </div>
-    </div>
-
-    <script>
-        const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
-        const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
-
-        const client = supabase.createClient(DB_URL, DB_KEY);
-        let signUpMode = true;
-        let pendingCampaignData = null; 
-        let currentUserEmail = "";
-
-        // Monitor login layout sequence & load database rows
-        client.auth.onAuthStateChange((event, session) => {
-            if (session?.user) {
-                currentUserEmail = session.user.email;
-                document.getElementById('authBox').classList.add('hidden');
-                document.getElementById('appBox').classList.remove('hidden');
-                document.getElementById('welcomeUser').innerText = `Logged in securely as: ${currentUserEmail}`;
-                
-                // Fetch saved campaigns instantly upon session mount
-                loadUserCampaigns();
-            } else {
-                document.getElementById('authBox').classList.remove('hidden');
-                document.getElementById('appBox').classList.add('hidden');
-            }
-        });
-
-        // Pull active user promos from Supabase database
-        async function loadUserCampaigns() {
-            try {
-                const { data, error } = await client
-                    .from('campaigns')
-                    .select('*')
-                    .eq('user_email', currentUserEmail)
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
-
-                const listBody = document.getElementById('campaignList');
-                listBody.innerHTML = ""; // Clear existing grid interface
-
-                if(data) {
-                    data.forEach(promo => {
-                        const statusColor = promo.status === "Live" ? "text-emerald-400" : "text-amber-400";
-                        const statusPulse = promo.status === "Live" ? "bg-emerald-500 animate-ping" : "bg-amber-500 animate-pulse";
-                        
-                        const row = `
-                            <tr>
-                                <td class="p-4">
-                                    <div class="font-bold text-white">${promo.track}</div>
-                                    <div class="text-xs text-gray-400">${promo.artist}</div>
-                                </td>
-                                <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${promo.network}</span></td>
-                                <td class="p-4 font-mono text-gray-300">₹${promo.budget}/day</td>
-                                <td class="p-4 font-mono text-purple-400 font-bold">0</td>
-                                <td class="p-4">
-                                    <span class="text-xs ${statusColor} flex items-center gap-1.5 font-medium">
-                                        <span class="h-2 w-2 rounded-full ${statusPulse}"></span> ${promo.status}
-                                    </span>
-                                </td>
-                            </tr>
-                        `;
-                        listBody.insertAdjacentHTML('beforeend', row);
-                    });
-                }
-            } catch (err) {
-                console.error("Database fetch crash:", err.message);
-            }
-        }
-
-        // Switch between Log In and Sign Up modes
-        document.getElementById('toggleModeBtn').addEventListener('click', () => {
-            signUpMode = !signUpMode;
-            document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account (Sign Up)' : 'Access Account (Log In)';
-            document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Already have an account? Switch to Log In' : 'Need an account? Switch to Sign Up';
-        });
-
-        // Process Auth Submissions
-        document.getElementById('secureAuthForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const email = document.getElementById('emailInput').value.trim();
-            const password = document.getElementById('passwordInput').value;
-
-            try {
-                if (signUpMode) {
-                    const { error } = await client.auth.signUp({ email, password });
-                    if (error) alert("Signup rejected: " + error.message);
-                } else {
-                    const { error } = await client.auth.signInWithPassword({ email, password });
-                    if (error) alert("Login failed: " + error.message);
-                }
-            } catch (crash) {
-                alert("Network crash: " + crash.message);
-            }
-        });
-
-        // Event controls for Real-Time Player Mockup Preview updates
-        const trackInput = document.getElementById('trackName');
-        const artistInput = document.getElementById('artistName');
-        const platformSelect = document.getElementById('platformSelect');
-
-        trackInput.addEventListener('input', () => document.getElementById('previewTrack').innerText = trackInput.value || 'Untitled Track');
-        artistInput.addEventListener('input', () => document.getElementById('previewArtist').innerText = artistInput.value || 'Unknown Artist');
-        platformSelect.addEventListener('change', () => document.getElementById('previewPlatformBtn').innerText = `Listen On ${platformSelect.value.split(' ')[0]}`);
-
-        // Catch Ad Builder Submission & Calculate Invoice Total
-        document.getElementById('adBuilderForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const dailyBudget = parseFloat(document.getElementById('adBudget').value);
-            const standardRunTimeDays = 7; 
-            const dynamicTotalBill = (dailyBudget * standardRunTimeDays).toFixed(2);
-
-            pendingCampaignData = {
-                track: trackInput.value,
-                artist: artistInput.value,
-                network: platformSelect.value,
-                budget: dailyBudget.toFixed(2)
-            };
-
-            document.getElementById('invoiceTrack').innerText = pendingCampaignData.track;
-            document.getElementById('invoicePlatform').innerText = pendingCampaignData.network;
-            document.getElementById('invoiceTotal').innerText = dynamicTotalBill;
-
-            document.getElementById('paymentModal').classList.remove('hidden');
-        });
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').classList.add('hidden');
-            pendingCampaignData = null;
-        }
-
-        // AUTOMATED GOOGLE PAY + DATA PERSISTENCE ENGINE
-        async function processSecurePayment() {
-            const payBtn = document.getElementById('payNowBtn');
-            payBtn.innerText = "⏳ Saving & Opening GPay...";
-            payBtn.disabled = true;
-
-            const totalBill = document.getElementById('invoiceTotal').innerText.trim();
+            // Build UPI Payment Link (Replace yourname@okaxis with your real merchant UPI handle)
+            const upiString = `upi://pay?pa=8899168241@fam&pn=AmplifyAd%20Studio&am=${dailyBudget}&cu=INR`;
             
-            // ⚠️ REPLACE THIS STRING WITH YOUR REAL GPAY/UPI VPA ADDRESS (e.g., yourname@oksbi)
-            const yourGpayId = "8899168241@fam"; 
-            const businessName = "AmplifyAd Studio";
+            // Fire off mobile redirect sequence
+            window.location.href = upiString;
 
-            try {
-                // 1. Commit campaign details to Supabase Cloud Server permanently
-                const { error } = await client.from('campaigns').insert([{
-                    user_email: currentUserEmail,
-                    track: pendingCampaignData.track,
-                    artist: pendingCampaignData.artist,
-                    network: pendingCampaignData.network,
-                    budget: pendingCampaignData.budget,
-                    status: "Pending Verification" // Stays pending until you confirm the manual GPay sync
-                }]);
-
-                if (error) throw error;
-
-                // 2. Trigger localized Google Pay application parameters sequence
-                const gpayUrl = `upi://pay?pa=${yourGpayId}&pn=${encodeURIComponent(businessName)}&am=${totalBill}&cu=INR&tn=${encodeURIComponent('Promo: ' + pendingCampaignData.track)}`;
-                window.location.href = gpayUrl;
-
-                // 3. Refresh interface tracking table view from database
-                await loadUserCampaigns();
-
-                // Desktop fallback container message loop
-                setTimeout(() => {
-                    alert(`📲 Mobile Users: App launching automatically.\n\n💻 Desktop Users: Send manual payment to:\nUPI ID: ${yourGpayId}\nAmount: ₹${totalBill}`);
-                    payBtn.innerText = "🔒 Process Payment with GPay";
-                    payBtn.disabled = false;
-                    closePaymentModal();
-                    document.getElementById('adBuilderForm').reset();
-                }, 1000);
-
-            } catch (err) {
-                alert("Database engine synchronization failure: " + err.message);
-                payBtn.disabled = false;
-                payBtn.innerText = "🔒 Process Payment with GPay";
-            }
+        } catch (err) {
+            console.error("Unhandled runtime application crash:", err);
+            alert("A fatal terminal error occurred. Please verify network access protocols.");
         }
+    }
+</script>
 
-        async function logout() {
-            await client.auth.signOut();
-        }
-    </script>
 </body>
 </html>
-"".
