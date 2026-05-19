@@ -164,24 +164,41 @@
         });
 
         // HANDLE USER AUTH (Signup & Login handler)
+        // FIXED USER AUTH HANDLER
         document.getElementById('authForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
+            e.preventDefault(); // Strictly stops the page from vanishing/refreshing
+            
+            const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value;
-            let result;
-
-            if (isSignUpMode) {
-                result = await supabase.auth.signUp({ email, password });
-                if(!result.error) alert("Check your email box for a confirmation link!");
-            } else {
-                result = await supabase.auth.signInWithPassword({ email, password });
+            
+            // Basic check to ensure keys aren't placeholders
+            if (SUPABASE_URL.includes("your-project-id")) {
+                alert("❌ Configuration Error: You forgot to replace the placeholder SUPABASE_URL with your actual Supabase Project URL on lines 136-137!");
+                return;
             }
 
-            if (result.error) {
-                alert("Auth Error: " + result.error.message);
-            } else if (result.data.user) {
-                checkUserSession();
+            try {
+                let result;
+                if (isSignUpMode) {
+                    result = await supabase.auth.signUp({ email, password });
+                    if (result.error) {
+                        alert("❌ Signup Refused: " + result.error.message);
+                    } else if (result.data.user) {
+                        alert("🎉 Signup initiated! If you haven't turned off email confirmations in Supabase, check your inbox. Otherwise, switch to 'Log In' mode now.");
+                        checkUserSession();
+                    }
+                } else {
+                    result = await supabase.auth.signInWithPassword({ email, password });
+                    if (result.error) {
+                        alert("❌ Login Failed: " + result.error.message);
+                    } else {
+                        checkUserSession();
+                    }
+                }
+            } catch (err) {
+                alert("💥 System Crash Error: " + err.message);
             }
+        });
         });
 
         // CHECK USER SESSION ON PAGE LOAD
