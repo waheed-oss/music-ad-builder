@@ -1,61 +1,112 @@
-<script>
-    // 1. GLOBAL VARIABLES - DEFINED FIRST
-    const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
-    const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
-    const client = supabase.createClient(DB_URL, DB_KEY);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmplifyAd Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen p-4">
 
-    let signUpMode = true; // This is the fix for your ReferenceError
-    let pendingCampaignData = null; 
-    let currentUserEmail = "";
+    <div id="authBox" class="max-w-md mx-auto mt-20 bg-slate-900 p-8 rounded-2xl border border-gray-800">
+        <h1 class="text-2xl font-black text-center text-purple-500 mb-6">AMPLIFYAD AUTH</h1>
+        <form id="secureAuthForm" class="space-y-4">
+            <input type="email" id="emailInput" placeholder="Email" required class="w-full bg-slate-950 border border-gray-800 rounded-lg p-2">
+            <input type="password" id="passwordInput" placeholder="Password" required minlength="6" class="w-full bg-slate-950 border border-gray-800 rounded-lg p-2">
+            <button type="submit" id="submitBtn" class="w-full bg-purple-600 py-2 rounded-lg font-bold">Create Account</button>
+        </form>
+        <button id="toggleModeBtn" class="w-full mt-4 text-xs text-purple-400 underline">Switch to Log In</button>
+    </div>
 
-    // 2. AUTH STATE LISTENER
-    client.auth.onAuthStateChange((event, session) => {
-        if (session?.user) {
-            currentUserEmail = session.user.email;
-            document.getElementById('authBox').classList.add('hidden');
-            document.getElementById('appBox').classList.remove('hidden');
-            document.getElementById('welcomeUser').innerText = `Logged in: ${currentUserEmail}`;
-            loadUserCampaigns();
-        } else {
-            document.getElementById('authBox').classList.remove('hidden');
-            document.getElementById('appBox').classList.add('hidden');
-        }
-    });
+    <div id="appBox" class="hidden max-w-4xl mx-auto space-y-6 my-6">
+        <div class="bg-slate-900 p-4 rounded-2xl flex justify-between items-center border border-gray-800">
+            <h2 class="font-black text-purple-500">🎵 AMPLIFYAD STUDIO</h2>
+            <button onclick="logout()" class="text-xs bg-slate-950 px-3 py-1 rounded border border-gray-800">Log Out</button>
+        </div>
 
-    // 3. FORM HANDLER
-    document.getElementById('secureAuthForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('emailInput').value.trim();
-        const password = document.getElementById('passwordInput').value;
-        
-        try {
-            const { error } = signUpMode 
-                ? await client.auth.signUp({ email, password }) 
-                : await client.auth.signInWithPassword({ email, password });
+        <form id="adBuilderForm" class="bg-slate-900 p-6 rounded-2xl border border-gray-800 grid md:grid-cols-2 gap-4">
+            <input type="text" id="trackName" required placeholder="Track Name" class="bg-slate-950 border border-gray-800 rounded p-2">
+            <input type="text" id="artistName" required placeholder="Artist Name" class="bg-slate-950 border border-gray-800 rounded p-2">
+            <input type="number" id="adBudget" min="5" value="25" class="bg-slate-950 border border-gray-800 rounded p-2">
+            <button type="submit" class="md:col-span-2 bg-purple-600 py-3 rounded-lg font-black uppercase">Review & Pay</button>
+        </form>
+
+        <table class="w-full bg-slate-900 border border-gray-800 rounded-2xl text-sm">
+            <tbody id="campaignList"></tbody>
+        </table>
+    </div>
+
+    <div id="paymentModal" class="hidden fixed inset-0 bg-slate-950/80 flex items-center justify-center p-4">
+        <div class="bg-slate-900 p-6 rounded-2xl border border-purple-900 w-full max-w-sm text-center">
+            <h3 class="font-bold mb-4">Google Pay Checkout</h3>
+            <p class="text-xs mb-4" id="invoiceTrack"></p>
+            <p class="text-xl font-bold mb-6">₹<span id="invoiceTotal">0.00</span></p>
+            <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-emerald-500 text-slate-950 font-black py-3 rounded-lg uppercase">Process Payment</button>
+            <button onclick="closePaymentModal()" class="mt-4 text-gray-500 underline text-xs">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. GLOBAL INITIALIZATION (Fixes ReferenceError)
+        const client = supabase.createClient("https://pjigbhodnviuuchdmwws.supabase.co", "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S");
+        let signUpMode = true;
+        let currentUserEmail = "";
+        let pendingCampaignData = null;
+
+        // 2. AUTH STATE LISTENER
+        client.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                currentUserEmail = session.user.email;
+                document.getElementById('authBox').classList.add('hidden');
+                document.getElementById('appBox').classList.remove('hidden');
+            } else {
+                document.getElementById('authBox').classList.remove('hidden');
+                document.getElementById('appBox').classList.add('hidden');
+            }
+        });
+
+        // 3. AUTH FORM LOGIC
+        document.getElementById('secureAuthForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const { error } = await (signUpMode ? client.auth.signUp({email, password}) : client.auth.signInWithPassword({email, password}));
+            if (error) alert(error.message);
+        };
+
+        document.getElementById('toggleModeBtn').onclick = () => {
+            signUpMode = !signUpMode;
+            document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account' : 'Access Account';
+            document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Switch to Log In' : 'Switch to Sign Up';
+        };
+
+        // 4. AD BUILDER
+        document.getElementById('adBuilderForm').onsubmit = (e) => {
+            e.preventDefault();
+            const b = parseFloat(document.getElementById('adBudget').value);
+            pendingCampaignData = { track: document.getElementById('trackName').value, artist: document.getElementById('artistName').value, budget: b.toFixed(2) };
+            document.getElementById('invoiceTrack').innerText = pendingCampaignData.track;
+            document.getElementById('invoiceTotal').innerText = (b * 7).toFixed(2);
+            document.getElementById('paymentModal').classList.remove('hidden');
+        };
+
+        // 5. PAYMENT ENGINE
+        async function processSecurePayment() {
+            const total = document.getElementById('invoiceTotal').innerText;
+            // Immediate GPay Trigger
+            window.location.href = `upi://pay?pa=8899168241@fam&pn=AmplifyAd&am=${total}&cu=INR`;
             
-            if (error) throw error;
-            alert(signUpMode ? "Check your email to verify!" : "Logged in successfully!");
-        } catch (err) {
-            alert("Error: " + err.message);
+            // Background DB Sync
+            try {
+                await client.from('campaigns').insert([{ user_email: currentUserEmail, track: pendingCampaignData.track, status: "Pending" }]);
+            } catch (e) { console.error("Sync error"); }
+            
+            closePaymentModal();
         }
-    };
 
-    // 4. TOGGLE MODE
-    document.getElementById('toggleModeBtn').onclick = () => {
-        signUpMode = !signUpMode;
-        document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account (Sign Up)' : 'Access Account (Log In)';
-        document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Already have an account? Switch to Log In' : 'Need an account? Switch to Sign Up';
-    };
-
-    // 5. PAYMENT ENGINE
-    async function processSecurePayment() {
-        const total = document.getElementById('invoiceTotal').innerText.trim();
-        window.location.href = `upi://pay?pa=8899168241@fam&pn=AmplifyAd&am=${total}&cu=INR&tn=${encodeURIComponent(pendingCampaignData.track)}`;
-        document.getElementById('paymentModal').classList.add('hidden');
-    }
-
-    // Helper functions
-    function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
-    async function logout() { await client.auth.signOut(); location.reload(); }
-    async function loadUserCampaigns() { /* ...logic... */ }
-</script>
+        function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+        async function logout() { await client.auth.signOut(); location.reload(); }
+    </script>
+</body>
+</html>
