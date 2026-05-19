@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,6 @@
     <title>AmplifyAd - Music Promotion Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="bg-slate-950 text-gray-100 min-h-screen font-sans flex items-center justify-center p-4 relative">
 
@@ -83,13 +82,13 @@
                         <input type="url" id="trackUrl" required placeholder="https://open.spotify.com/track/..." class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Daily Marketing Budget ($)</label>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Daily Marketing Budget (Amount)</label>
                         <input type="number" id="adBudget" min="5" value="25" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
                     </div>
                     
                     <div class="md:col-span-2 mt-2">
                         <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg tracking-wider uppercase">
-                            💳 Review Campaign & Pay
+                            📱 Review Campaign & Pay via GPay
                         </button>
                     </div>
                 </form>
@@ -147,14 +146,14 @@
         </div>
     </div>
 
-    <!-- STRIPE SECURE CHECKOUT MODAL OVERLAY -->
+    <!-- GOOGLE PAY / UPI SECURE CHECKOUT MODAL OVERLAY -->
     <div id="paymentModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-purple-900/60 p-6 rounded-2xl shadow-2xl max-w-sm w-full text-center space-y-6">
-            <div class="w-12 h-12 bg-purple-950 rounded-full flex items-center justify-center mx-auto text-purple-400 text-xl border border-purple-800">
-                🛡️
+            <div class="w-12 h-12 bg-emerald-950 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-xl border border-emerald-800">
+                📱
             </div>
             <div>
-                <h3 class="text-lg font-black text-white">Secure Checkout</h3>
+                <h3 class="text-lg font-black text-white">Google Pay Checkout</h3>
                 <p class="text-xs text-gray-400 mt-1">Review your music promotion campaign invoice</p>
             </div>
 
@@ -164,19 +163,19 @@
                 <div class="flex justify-between"><span class="text-gray-500">Placement:</span> <span class="text-purple-400" id="invoicePlatform">--</span></div>
                 <div class="flex justify-between"><span class="text-gray-500">Schedule:</span> <span class="text-gray-300">7 Days Run Time</span></div>
                 <hr class="border-gray-800 my-2">
-                <div class="flex justify-between text-sm"><span class="text-gray-400 font-sans font-bold">Total Bill:</span> <span class="text-emerald-400 font-bold" id="invoiceTotal">$0.00</span></div>
+                <div class="flex justify-between text-sm"><span class="text-gray-400 font-sans font-bold">Total Bill:</span> <span class="text-emerald-400 font-bold" id="invoiceTotal">0.00</span></div>
             </div>
 
             <!-- Action buttons -->
             <div class="space-y-2">
                 <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-lg text-sm tracking-wide uppercase transition shadow-lg flex items-center justify-center gap-2">
-                    🔒 Process Payment with Stripe
+                    🔒 Process Payment with GPay
                 </button>
                 <button onclick="closePaymentModal()" class="w-full bg-slate-950 hover:bg-slate-800 text-gray-400 border border-gray-800 text-xs py-2 rounded-lg font-medium transition">
                     Cancel & Modify Order
                 </button>
             </div>
-            <p class="text-[10px] text-gray-500">Payments encrypted securely. Powered by Stripe Merchant Systems.</p>
+            <p class="text-[10px] text-gray-500">Payments routed securely. Direct bank-to-bank via UPI network protocols.</p>
         </div>
     </div>
 
@@ -252,7 +251,7 @@
 
             document.getElementById('invoiceTrack').innerText = pendingCampaignData.track;
             document.getElementById('invoicePlatform').innerText = pendingCampaignData.network;
-            document.getElementById('invoiceTotal').innerText = `$${dynamicTotalBill}`;
+            document.getElementById('invoiceTotal').innerText = dynamicTotalBill;
 
             document.getElementById('paymentModal').classList.remove('hidden');
         });
@@ -262,29 +261,49 @@
             pendingCampaignData = null;
         }
 
-        // FIXED: Replaced simulated code execution with explicit Stripe Payment Link routing
+        // AUTOMATED GOOGLE PAY ENGINE
         function processSecurePayment() {
             const payBtn = document.getElementById('payNowBtn');
-            payBtn.innerText = "🚀 Redirecting to Stripe...";
+            payBtn.innerText = "🚀 Opening Google Pay...";
             payBtn.disabled = true;
 
-            const platform = pendingCampaignData.network;
+            const totalBill = document.getElementById('invoiceTotal').innerText.trim();
             
-            // ⚠️ PASTE YOUR COPIED STRIPE PAYMENT LINKS FROM YOUR DASHBOARD HERE:
-            let stripeUrl = "https://buy.stripe.com/test_placeholder_fallback_link"; 
+            // ⚠️ REPLACE THIS STRING WITH YOUR REAL GPAY/UPI VPA ADDRESS (e.g., yourname@oksbi)
+            const yourGpayId = "yourmerchantid@okaxis"; 
+            const businessName = "AmplifyAd Studio";
 
-            if (platform === "Spotify Audio") {
-                stripeUrl = "https://buy.stripe.com/test_placeholder_spotify"; 
-            } else if (platform === "TikTok Music") {
-                stripeUrl = "https://buy.stripe.com/test_placeholder_tiktok";
-            } else if (platform === "Instagram Reels") {
-                stripeUrl = "https://buy.stripe.com/test_placeholder_instagram";
-            } else if (platform === "YouTube Shorts") {
-                stripeUrl = "https://buy.stripe.com/test_placeholder_youtube";
-            }
+            // Assembles standard UPI deep-link standard URI protocol parameters
+            const gpayUrl = `upi://pay?pa=${yourGpayId}&pn=${encodeURIComponent(businessName)}&am=${totalBill}&cu=INR&tn=${encodeURIComponent('Promo: ' + pendingCampaignData.track)}`;
 
-            // Immediately hands off the session checkout to Stripe's secure endpoints
-            window.location.href = stripeUrl;
+            // Forces mobile system handshake to open local GPay wrapper
+            window.location.href = gpayUrl;
+
+            // Desktop UI Safety Fallback routine execution
+            setTimeout(() => {
+                alert(`📲 Mobile Users: Your Google Pay app should trigger automatically.\n\n💻 Desktop/Laptop Users:\nPlease transfer funds to:\nUPI ID: ${yourGpayId}\nAmount: ₹${totalBill}\n\nYour campaign will move to processing queues instantly.`);
+                
+                if (pendingCampaignData) {
+                    const newRowHtml = `
+                        <tr>
+                            <td class="p-4">
+                                <div class="font-bold text-white">${pendingCampaignData.track}</div>
+                                <div class="text-xs text-gray-400">${pendingCampaignData.artist}</div>
+                            </td>
+                            <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${pendingCampaignData.network}</span></td>
+                            <td class="p-4 font-mono text-gray-300">₹${pendingCampaignData.budget}/day</td>
+                            <td class="p-4 font-mono text-purple-400 font-bold">0</td>
+                            <td class="p-4"><span class="text-xs text-amber-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span> Pending Verification</span></td>
+                        </tr>
+                    `;
+                    document.getElementById('campaignList').insertAdjacentHTML('afterbegin', newRowHtml);
+                }
+
+                payBtn.innerText = "🔒 Process Payment with GPay";
+                payBtn.disabled = false;
+                closePaymentModal();
+                document.getElementById('adBuilderForm').reset();
+            }, 1500);
         }
 
         async function logout() {
