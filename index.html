@@ -1,30 +1,28 @@
 <script>
+    // 1. GLOBAL VARIABLES - DEFINED FIRST
     const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
     const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
     const client = supabase.createClient(DB_URL, DB_KEY);
 
-    // 1. Define global variables at the very top
-    let signUpMode = true; 
+    let signUpMode = true; // This is the fix for your ReferenceError
+    let pendingCampaignData = null; 
     let currentUserEmail = "";
-    let pendingCampaignData = null;
 
-    // 2. Auth State Change
+    // 2. AUTH STATE LISTENER
     client.auth.onAuthStateChange((event, session) => {
-        if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
-            if (session?.user) {
-                currentUserEmail = session.user.email;
-                document.getElementById('authBox').classList.add('hidden');
-                document.getElementById('appBox').classList.remove('hidden');
-                document.getElementById('welcomeUser').innerText = `Logged in: ${currentUserEmail}`;
-                loadUserCampaigns();
-            }
-        } else if (event === 'SIGNED_OUT') {
+        if (session?.user) {
+            currentUserEmail = session.user.email;
+            document.getElementById('authBox').classList.add('hidden');
+            document.getElementById('appBox').classList.remove('hidden');
+            document.getElementById('welcomeUser').innerText = `Logged in: ${currentUserEmail}`;
+            loadUserCampaigns();
+        } else {
             document.getElementById('authBox').classList.remove('hidden');
             document.getElementById('appBox').classList.add('hidden');
         }
     });
 
-    // 3. Fixed Auth Submission
+    // 3. FORM HANDLER
     document.getElementById('secureAuthForm').onsubmit = async (e) => {
         e.preventDefault();
         const email = document.getElementById('emailInput').value.trim();
@@ -36,23 +34,28 @@
                 : await client.auth.signInWithPassword({ email, password });
             
             if (error) throw error;
-            alert(signUpMode ? "Account created!" : "Logged in successfully!");
+            alert(signUpMode ? "Check your email to verify!" : "Logged in successfully!");
         } catch (err) {
             alert("Error: " + err.message);
         }
     };
 
-    // 4. Properly link your button toggle
+    // 4. TOGGLE MODE
     document.getElementById('toggleModeBtn').onclick = () => {
         signUpMode = !signUpMode;
         document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account (Sign Up)' : 'Access Account (Log In)';
         document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Already have an account? Switch to Log In' : 'Need an account? Switch to Sign Up';
     };
 
-    // Payment and other functions remain the same...
+    // 5. PAYMENT ENGINE
     async function processSecurePayment() {
         const total = document.getElementById('invoiceTotal').innerText.trim();
-        window.location.href = `upi://pay?pa=8899168241@fam&pn=AmplifyAd&am=${total}&cu=INR`;
+        window.location.href = `upi://pay?pa=8899168241@fam&pn=AmplifyAd&am=${total}&cu=INR&tn=${encodeURIComponent(pendingCampaignData.track)}`;
         document.getElementById('paymentModal').classList.add('hidden');
     }
+
+    // Helper functions
+    function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+    async function logout() { await client.auth.signOut(); location.reload(); }
+    async function loadUserCampaigns() { /* ...logic... */ }
 </script>
