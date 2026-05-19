@@ -139,7 +139,7 @@
                         </tr>
                     </thead>
                     <tbody id="campaignList" class="divide-y divide-gray-800/50">
-                        <!-- Active campaigns show here -->
+                        <!-- Database rows pull and map directly here -->
                     </tbody>
                 </table>
             </div>
@@ -186,18 +186,66 @@
         const client = supabase.createClient(DB_URL, DB_KEY);
         let signUpMode = true;
         let pendingCampaignData = null; 
+        let currentUserEmail = "";
 
-        // Monitor login layout sequence
+        // Monitor login layout sequence & load database rows
         client.auth.onAuthStateChange((event, session) => {
             if (session?.user) {
+                currentUserEmail = session.user.email;
                 document.getElementById('authBox').classList.add('hidden');
                 document.getElementById('appBox').classList.remove('hidden');
-                document.getElementById('welcomeUser').innerText = `Logged in securely as: ${session.user.email}`;
+                document.getElementById('welcomeUser').innerText = `Logged in securely as: ${currentUserEmail}`;
+                
+                // Fetch saved campaigns instantly upon session mount
+                loadUserCampaigns();
             } else {
                 document.getElementById('authBox').classList.remove('hidden');
                 document.getElementById('appBox').classList.add('hidden');
             }
         });
+
+        // Pull active user promos from Supabase database
+        async function loadUserCampaigns() {
+            try {
+                const { data, error } = await client
+                    .from('campaigns')
+                    .select('*')
+                    .eq('user_email', currentUserEmail)
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                const listBody = document.getElementById('campaignList');
+                listBody.innerHTML = ""; // Clear existing grid interface
+
+                if(data) {
+                    data.forEach(promo => {
+                        const statusColor = promo.status === "Live" ? "text-emerald-400" : "text-amber-400";
+                        const statusPulse = promo.status === "Live" ? "bg-emerald-500 animate-ping" : "bg-amber-500 animate-pulse";
+                        
+                        const row = `
+                            <tr>
+                                <td class="p-4">
+                                    <div class="font-bold text-white">${promo.track}</div>
+                                    <div class="text-xs text-gray-400">${promo.artist}</div>
+                                </td>
+                                <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${promo.network}</span></td>
+                                <td class="p-4 font-mono text-gray-300">₹${promo.budget}/day</td>
+                                <td class="p-4 font-mono text-purple-400 font-bold">0</td>
+                                <td class="p-4">
+                                    <span class="text-xs ${statusColor} flex items-center gap-1.5 font-medium">
+                                        <span class="h-2 w-2 rounded-full ${statusPulse}"></span> ${promo.status}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                        listBody.insertAdjacentHTML('beforeend', row);
+                    });
+                }
+            } catch (err) {
+                console.error("Database fetch crash:", err.message);
+            }
+        }
 
         // Switch between Log In and Sign Up modes
         document.getElementById('toggleModeBtn').addEventListener('click', () => {
@@ -261,10 +309,10 @@
             pendingCampaignData = null;
         }
 
-        // AUTOMATED GOOGLE PAY ENGINE
-        function processSecurePayment() {
+        // AUTOMATED GOOGLE PAY + DATA PERSISTENCE ENGINE
+        async function processSecurePayment() {
             const payBtn = document.getElementById('payNowBtn');
-            payBtn.innerText = "🚀 Opening Google Pay...";
+            payBtn.innerText = "⏳ Saving & Opening GPay...";
             payBtn.disabled = true;
 
             const totalBill = document.getElementById('invoiceTotal').innerText.trim();
@@ -273,37 +321,40 @@
             const yourGpayId = "8899168241@fam"; 
             const businessName = "AmplifyAd Studio";
 
-            // Assembles standard UPI deep-link standard URI protocol parameters
-            const gpayUrl = `upi://pay?pa=${yourGpayId}&pn=${encodeURIComponent(businessName)}&am=${totalBill}&cu=INR&tn=${encodeURIComponent('Promo: ' + pendingCampaignData.track)}`;
+            try {
+                // 1. Commit campaign details to Supabase Cloud Server permanently
+                const { error } = await client.from('campaigns').insert([{
+                    user_email: currentUserEmail,
+                    track: pendingCampaignData.track,
+                    artist: pendingCampaignData.artist,
+                    network: pendingCampaignData.network,
+                    budget: pendingCampaignData.budget,
+                    status: "Pending Verification" // Stays pending until you confirm the manual GPay sync
+                }]);
 
-            // Forces mobile system handshake to open local GPay wrapper
-            window.location.href = gpayUrl;
+                if (error) throw error;
 
-            // Desktop UI Safety Fallback routine execution
-            setTimeout(() => {
-                alert(`📲 Mobile Users: Your Google Pay app should trigger automatically.\n\n💻 Desktop/Laptop Users:\nPlease transfer funds to:\nUPI ID: ${yourGpayId}\nAmount: ₹${totalBill}\n\nYour campaign will move to processing queues instantly.`);
-                
-                if (pendingCampaignData) {
-                    const newRowHtml = `
-                        <tr>
-                            <td class="p-4">
-                                <div class="font-bold text-white">${pendingCampaignData.track}</div>
-                                <div class="text-xs text-gray-400">${pendingCampaignData.artist}</div>
-                            </td>
-                            <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${pendingCampaignData.network}</span></td>
-                            <td class="p-4 font-mono text-gray-300">₹${pendingCampaignData.budget}/day</td>
-                            <td class="p-4 font-mono text-purple-400 font-bold">0</td>
-                            <td class="p-4"><span class="text-xs text-amber-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span> Pending Verification</span></td>
-                        </tr>
-                    `;
-                    document.getElementById('campaignList').insertAdjacentHTML('afterbegin', newRowHtml);
-                }
+                // 2. Trigger localized Google Pay application parameters sequence
+                const gpayUrl = `upi://pay?pa=${yourGpayId}&pn=${encodeURIComponent(businessName)}&am=${totalBill}&cu=INR&tn=${encodeURIComponent('Promo: ' + pendingCampaignData.track)}`;
+                window.location.href = gpayUrl;
 
-                payBtn.innerText = "🔒 Process Payment with GPay";
+                // 3. Refresh interface tracking table view from database
+                await loadUserCampaigns();
+
+                // Desktop fallback container message loop
+                setTimeout(() => {
+                    alert(`📲 Mobile Users: App launching automatically.\n\n💻 Desktop Users: Send manual payment to:\nUPI ID: ${yourGpayId}\nAmount: ₹${totalBill}`);
+                    payBtn.innerText = "🔒 Process Payment with GPay";
+                    payBtn.disabled = false;
+                    closePaymentModal();
+                    document.getElementById('adBuilderForm').reset();
+                }, 1000);
+
+            } catch (err) {
+                alert("Database engine synchronization failure: " + err.message);
                 payBtn.disabled = false;
-                closePaymentModal();
-                document.getElementById('adBuilderForm').reset();
-            }, 1500);
+                payBtn.innerText = "🔒 Process Payment with GPay";
+            }
         }
 
         async function logout() {
