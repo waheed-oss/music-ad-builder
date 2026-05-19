@@ -32,41 +32,150 @@
         </div>
     </div>
 
-    <!-- MAIN APP BACKSTAGE COMPONENT -->
-    <div id="appBox" class="hidden w-full max-w-4xl mx-auto space-y-6">
+    <!-- MAIN APP STUDIO COMPONENT -->
+    <div id="appBox" class="hidden w-full max-w-6xl mx-auto space-y-6 my-6">
+        
         <!-- Header Bar -->
-        <div class="bg-slate-900 border border-gray-800 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+        <div class="bg-slate-900 border border-gray-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
             <div>
-                <h2 class="text-lg font-bold text-purple-400">🚀 AmplifyAd Studio</h2>
+                <h2 class="text-xl font-black tracking-wide text-purple-500">🎵 AMPLIFYAD STUDIO</h2>
                 <p class="text-xs text-gray-400" id="welcomeUser">Logged in securely</p>
             </div>
-            <button onclick="logout()" class="bg-red-950 hover:bg-red-900 text-red-200 border border-red-800 text-xs px-4 py-2 rounded-lg font-bold transition">
+            <button onclick="logout()" class="bg-slate-950 hover:bg-red-950 hover:text-red-200 border border-gray-800 text-xs px-4 py-2 rounded-lg font-bold transition">
                 🚪 Secure Log Out
             </button>
         </div>
 
-        <!-- 🛠️ YOUR ACTUAL STUDIO CONTENT GOES HERE 🛠️ -->
-        <div class="bg-slate-900 border border-gray-800 p-8 rounded-2xl shadow-xl text-center">
-            <span class="text-5xl">🎉</span>
-            <h3 class="text-2xl font-black mt-4 mb-2 text-white">Access Granted!</h3>
-            <p class="text-sm text-gray-400 max-w-md mx-auto mb-6">
-                Your studio vault is securely open. You can now delete this placeholder card and start building your analytics, tools, or tables right here.
-            </p>
+        <!-- Two Column Studio Workspace -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Quick Grid Placeholder Example -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mt-8">
-                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
-                    <div class="text-xs text-gray-500 uppercase font-bold">Total Campaigns</div>
-                    <div class="text-xl font-black text-purple-400 mt-1">12 Active</div>
+            <!-- Column 1 & 2: Ad Builder Form -->
+            <div class="lg:col-span-2 bg-slate-900 border border-gray-800 p-6 rounded-2xl shadow-xl">
+                <h3 class="text-lg font-bold mb-4 text-white flex items-center gap-2">
+                    <span>⚡</span> Create New Audio Ad Campaign
+                </h3>
+                
+                <form id="adBuilderForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Track/Song Name</label>
+                        <input type="text" id="trackName" required placeholder="e.g., Midnight Melodies" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Artist Name</label>
+                        <input type="text" id="artistName" required placeholder="e.g., DJ Phantom" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Target Network</label>
+                        <select id="platformSelect" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                            <option value="Spotify Audio">Spotify Ad Network</option>
+                            <option value="TikTok Music">TikTok Sound Drop</option>
+                            <option value="Instagram Reels">Instagram Audio Push</option>
+                            <option value="YouTube Shorts">YouTube Shorts Promo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Target Music Genre</label>
+                        <input type="text" id="targetGenre" placeholder="e.g., Hip Hop, Synthwave, Pop" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Smart Link / Audio Asset URL</label>
+                        <input type="url" id="trackUrl" required placeholder="https://open.spotify.com/track/... or soundcloud link" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Daily Marketing Budget ($)</label>
+                        <input type="number" id="adBudget" min="5" value="25" class="w-full bg-slate-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-white focus:border-purple-500 outline-none">
+                    </div>
+                    
+                    <div class="md:col-span-2 mt-2">
+                        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg tracking-wider uppercase">
+                            🚀 Launch Music Promotion
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Column 3: Live Campaign Mockup Preview -->
+            <div class="bg-slate-900 border border-gray-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xs uppercase tracking-wider text-gray-400 mb-4 font-bold">✨ Real-time Ad Preview</h3>
+                    
+                    <!-- Dynamic Mock Player Card -->
+                    <div class="bg-slate-950 border border-purple-900/40 p-5 rounded-xl space-y-4 shadow-inner relative overflow-hidden">
+                        <div class="absolute top-2 right-2 bg-purple-900/60 text-[10px] text-purple-300 px-2 py-0.5 rounded font-black uppercase tracking-widest">Sponsored</div>
+                        
+                        <!-- Pseudo Album Cover Visualizer -->
+                        <div class="w-full aspect-square bg-gradient-to-br from-purple-900 to-slate-900 rounded-lg flex items-center justify-center border border-gray-800 shadow-md">
+                            <span class="text-5xl animate-pulse">💿</span>
+                        </div>
+                        
+                        <div>
+                            <div id="previewTrack" class="font-black text-lg text-white truncate">Midnight Melodies</div>
+                            <div id="previewArtist" class="text-sm text-gray-400 truncate">DJ Phantom</div>
+                        </div>
+
+                        <!-- Audio Playbar Simulation -->
+                        <div class="space-y-1">
+                            <div class="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full w-1/3 bg-purple-500 rounded-full"></div>
+                            </div>
+                            <div class="flex justify-between text-[10px] text-gray-500 font-mono">
+                                <span>0:12</span>
+                                <span>0:30</span>
+                            </div>
+                        </div>
+
+                        <!-- CTA Button -->
+                        <button id="previewPlatformBtn" class="w-full bg-emerald-500 text-slate-950 font-black text-xs py-2.5 rounded-full uppercase tracking-wider transition hover:scale-102">
+                            Listen On Spotify
+                        </button>
+                    </div>
                 </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
-                    <div class="text-xs text-gray-500 uppercase font-bold">Ad Spend</div>
-                    <div class="text-xl font-black text-emerald-400 mt-1">$1,240.50</div>
-                </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
-                    <div class="text-xs text-gray-500 uppercase font-bold">Total Clicks</div>
-                    <div class="text-xl font-black text-blue-400 mt-1">48.2k</div>
-                </div>
+                <p class="text-[11px] text-gray-500 mt-4 text-center">Preview emulates target listener display on dynamic placement APIs.</p>
+            </div>
+        </div>
+
+        <!-- Bottom Panel: Campaign Tracker Analytics Grid -->
+        <div class="bg-slate-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-6 border-b border-gray-800">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span>📊</span> Live Promotion Analytics Tracker
+                </h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-950 text-gray-400 text-xs uppercase tracking-wider border-b border-gray-800">
+                            <th class="p-4">Campaign Track / Artist</th>
+                            <th class="p-4">Platform Placement</th>
+                            <th class="p-4">Daily Budget</th>
+                            <th class="p-4">Est. Streams Generated</th>
+                            <th class="p-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="campaignList" class="divide-y divide-gray-800/50">
+                        <!-- Default Rows -->
+                        <tr>
+                            <td class="p-4">
+                                <div class="font-bold text-white">Hyperdrive Rhythm</div>
+                                <div class="text-xs text-gray-400">Solar Flare Project</div>
+                            </td>
+                            <td class="p-4"><span class="bg-emerald-950/80 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded text-xs">Spotify Audio</span></td>
+                            <td class="p-4 font-mono text-gray-300">$50.00/day</td>
+                            <td class="p-4 font-mono text-purple-400 font-bold">14,204</td>
+                            <td class="p-4"><span class="text-xs text-emerald-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> Live & Pushing</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4">
+                                <div class="font-bold text-white">Neon Sunset (Remix)</div>
+                                <div class="text-xs text-gray-400">Luna Vista</div>
+                            </td>
+                            <td class="p-4"><span class="bg-pink-950/80 text-pink-400 border border-pink-800 px-2 py-0.5 rounded text-xs">TikTok Music</span></td>
+                            <td class="p-4 font-mono text-gray-300">$30.00/day</td>
+                            <td class="p-4 font-mono text-purple-400 font-bold">8,910</td>
+                            <td class="p-4"><span class="text-xs text-emerald-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span> Live & Pushing</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -97,10 +206,9 @@
             document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Already have an account? Switch to Log In' : 'Need an account? Switch to Sign Up';
         });
 
-        // Intercept form submission
+        // Form handling for login & registration
         document.getElementById('secureAuthForm').addEventListener('submit', async (event) => {
             event.preventDefault();
-            
             const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passwordInput').value;
 
@@ -110,7 +218,7 @@
                     if (error) {
                         alert("Supabase rejected signup: " + error.message);
                     } else {
-                        alert("Account created successfully! If you can't log in right away, make sure 'Confirm Email' is disabled in your Supabase Auth settings.");
+                        alert("Account created! If you cannot log in right away, toggle email confirmation OFF in Supabase.");
                     }
                 } else {
                     const { error } = await client.auth.signInWithPassword({ email, password });
@@ -119,6 +227,44 @@
             } catch (crash) {
                 alert("System network crash: " + crash.message);
             }
+        });
+
+        // REAL-TIME PREVIEW EVENT CONTROLS
+        const trackInput = document.getElementById('trackName');
+        const artistInput = document.getElementById('artistName');
+        const platformSelect = document.getElementById('platformSelect');
+
+        trackInput.addEventListener('input', () => document.getElementById('previewTrack').innerText = trackInput.value || 'Untitled Track');
+        artistInput.addEventListener('input', () => document.getElementById('previewArtist').innerText = artistInput.value || 'Unknown Artist');
+        platformSelect.addEventListener('change', () => document.getElementById('previewPlatformBtn').innerText = `Listen On ${platformSelect.value.split(' ')[0]}`);
+
+        // HANDLE MUSIC AD LAUNCH EVENTS
+        document.getElementById('adBuilderForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const track = trackInput.value;
+            const artist = artistInput.value;
+            const network = platformSelect.value;
+            const budget = parseFloat(document.getElementById('adBudget').value).toFixed(2);
+
+            // Construct new analytical line item markup row dynamically
+            const newRowHtml = `
+                <tr>
+                    <td class="p-4">
+                        <div class="font-bold text-white">${track}</div>
+                        <div class="text-xs text-gray-400">${artist}</div>
+                    </td>
+                    <td class="p-4"><span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-2 py-0.5 rounded text-xs">${network}</span></td>
+                    <td class="p-4 font-mono text-gray-300">$${budget}/day</td>
+                    <td class="p-4 font-mono text-purple-400 font-bold">0</td>
+                    <td class="p-4"><span class="text-xs text-yellow-400 flex items-center gap-1.5 font-medium"><span class="h-2 w-2 rounded-full bg-yellow-500"></span> Pending Sync</span></td>
+                </tr>
+            `;
+
+            // Append row item inside dashboard node element
+            document.getElementById('campaignList').insertAdjacentHTML('afterbegin', newRowHtml);
+            document.getElementById('adBuilderForm').reset();
+            alert(`🎉 Campaign for "${track}" has been initialized in your preview table!`);
         });
 
         async function logout() {
