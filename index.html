@@ -45,12 +45,12 @@
     </div>
 
     <script>
-        // ⚠️ REPLACE THESE TWO STRINGS WITH YOUR COPIED SUPABASE VALUES
+        // REPLACE THESE TWO STRINGS WITH YOUR COPIED SUPABASE VALUES
         const DB_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
         const DB_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
 
-        // Establish core cloud gateway connection
-        const client = ::supabase.createClient(DB_URL, DB_KEY);
+        // FIXED: Removed the invalid "::" syntax error here
+        const client = supabase.createClient(DB_URL, DB_KEY);
         let signUpMode = true;
 
         // Toggle configuration modes cleanly
@@ -62,30 +62,29 @@
 
         // Intercept form submission to apply custom cloud operations safely
         document.getElementById('secureAuthForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Critical: stops the page from refreshing or vanishing fields
+            event.preventDefault(); // Critical: stops the page from refreshing
             
             const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passwordInput').value;
 
             if (DB_URL.includes("your-project-id")) {
-                alert("Stop! You forgot to paste your actual Supabase URL and Key inside the code at lines 138-139.");
+                alert("Stop! You forgot to paste your actual Supabase URL and Key.");
                 return;
             }
 
             try {
-                let response;
                 if (signUpMode) {
-                    response = await client.auth.signUp({ email, password });
-                    if (response.error) {
-                        alert("Supabase rejected signup: " + response.error.message);
+                    const { data, error } = await client.auth.signUp({ email, password });
+                    if (error) {
+                        alert("Supabase rejected signup: " + error.message);
                     } else {
                         alert("Account created successfully! If you are stuck, verify email confirmations are switched OFF in Supabase.");
                         syncSession();
                     }
                 } else {
-                    response = await client.auth.signInWithPassword({ email, password });
-                    if (response.error) {
-                        alert("Login failed: " + response.error.message);
+                    const { data, error } = await client.auth.signInWithPassword({ email, password });
+                    if (error) {
+                        alert("Login failed: " + error.message);
                     } else {
                         syncSession();
                     }
