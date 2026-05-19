@@ -1,125 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AmplifyAd Studio - Music Ad Builder</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg-color: #0b0c10;
-            --card-bg: #1f2833;
-            --text-color: #c5a059;
-            --accent-color: #45a29e;
-            --button-color: #66fcf1;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 450px;
-        }
-        h2 {
-            text-align: center;
-            color: var(--button-color);
-            margin-bottom: 25px;
-        }
-        .form-group {
-            margin-bottom: 18px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #c5a059;
-            font-size: 14px;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            background-color: #0b0c10;
-            border: 1px solid #45a29e;
-            border-radius: 6px;
-            color: white;
-            font-size: 16px;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--button-color);
-        }
-        .btn-submit {
-            width: 100%;
-            background-color: #2ecc71;
-            color: #0b0c10;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.2s ease;
-        }
-        .btn-submit:hover {
-            background-color: #27ae60;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>AmplifyAd Studio</h2>
-    <form id="adBuilderForm">
-        <div class="form-group">
-            <label for="email">User Email</label>
-            <input type="email" id="email" placeholder="yourname@example.com" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="track">Track Name</label>
-            <input type="text" id="track" placeholder="Enter song title" required>
-        </div>
-
-        <div class="form-group">
-            <label for="artist">Artist Name</label>
-            <input type="text" id="artist" placeholder="Enter artist name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="network">Target Advertising Network</label>
-            <select id="network" required>
-                <option value="Instagram">Instagram Ads</option>
-                <option value="Spotify">Spotify Audio Ads</option>
-                <option value="YouTube">YouTube Music Ads</option>
-                <option value="TikTok">TikTok Sound Ads</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="budget">Daily Budget (INR)</label>
-            <input type="number" id="budget" placeholder="e.g. 500" min="1" required>
-        </div>
-
-        <button type="submit" class="btn-submit">SAVING & OPENING GPAY...</button>
-    </form>
-</div>
-
-<script>
+                <script>
     // 1. Initialize Supabase Connection
-    // REMEMBER: Replace these placeholder strings with your actual Supabase URL and Anon Key
+    // ⚠️ KEEP YOUR REAL URL AND KEY HERE (Do not overwrite them if they are already working!)
     const SUPABASE_URL = "https://pjigbhodnviuuchdmwws.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S";
     
@@ -139,7 +20,7 @@
         const dailyBudget = document.getElementById('budget').value;
 
         try {
-            // Send data cleanly to Supabase. NO .select() used here to prevent RLS cache errors!
+            // FIX: Pushes data smoothly. No .select() used here to prevent the RLS cache error!
             const { error } = await supabase
                 .from('campaigns')
                 .insert([
@@ -148,7 +29,7 @@
                         track: trackName, 
                         artist: artistName, 
                         network: selectedNetwork, 
-                        budget: parseFloat(dailyBudget)
+                        budget: parseFloat(dailyBudget) // Ensures it saves as a clean number data type
                     }
                 ]);
 
@@ -156,16 +37,16 @@
             if (error) {
                 console.error("Supabase Error Context:", error);
                 alert(`Database engine synchronization failure: ${error.message}`);
-                return; // Stop code right here so it doesn't try opening GPay with failed logs
+                return; // Stop code here so it doesn't try opening GPay on a failed save
             }
 
             // SUCCESS PATH: Database accepted row transaction seamlessly
             console.log("Telemetry synced securely! Spawning deep-link layout...");
             
-            // Build UPI Payment Link (Replace yourname@okaxis with your real merchant UPI handle)
+            // Build UPI Payment Link (⚠️ Make sure your real UPI ID is here instead of yourname@okaxis)
             const upiString = `upi://pay?pa=8899168241@fam&pn=AmplifyAd%20Studio&am=${dailyBudget}&cu=INR`;
             
-            // Fire off mobile redirect sequence
+            // Fire off mobile redirect sequence to open Google Pay
             window.location.href = upiString;
 
         } catch (err) {
@@ -174,6 +55,4 @@
         }
     }
 </script>
-
-</body>
-</html>
+        
