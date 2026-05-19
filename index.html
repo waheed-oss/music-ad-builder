@@ -65,10 +65,13 @@
     </div>
 
     <script>
+        // 1. GLOBAL VARIABLES - DEFINED FIRST
         const client = supabase.createClient("https://pjigbhodnviuuchdmwws.supabase.co", "sb_publishable_ch8SXAc1FpqYWcwK45rtMg_wWwlMf7S");
+        let signUpMode = true;
         let currentUserEmail = "";
         let pendingCampaignData = null;
 
+        // 2. AUTH STATE LISTENER
         client.auth.onAuthStateChange((event, session) => {
             if (session?.user) {
                 currentUserEmail = session.user.email;
@@ -80,6 +83,7 @@
             }
         });
 
+        // 3. AUTH FORM LOGIC
         document.getElementById('secureAuthForm').onsubmit = async (e) => {
             e.preventDefault();
             const email = document.getElementById('emailInput').value.trim();
@@ -88,21 +92,29 @@
             if (error) alert(error.message);
         };
 
-        async function processSecurePayment() {
-            // 1. TRIGGER GPAY IMMEDIATELY
-            const total = document.getElementById('invoiceTotal').innerText;
-            window.location.href = `upi://pay?pa=8899168241@fam&pn=AmplifyAd&am=${total}&cu=INR`;
+        document.getElementById('toggleModeBtn').onclick = () => {
+            signUpMode = !signUpMode;
+            document.getElementById('submitBtn').innerText = signUpMode ? 'Create Account' : 'Access Account';
+            document.getElementById('toggleModeBtn').innerText = signUpMode ? 'Switch to Log In' : 'Switch to Sign Up';
+        };
 
-            // 2. BACKGROUND SYNC
+        // 4. PAYMENT & SYNC
+        async function processSecurePayment() {
+            const total = document.getElementById('invoiceTotal').innerText;
+            const track = document.getElementById('invoiceTrack').innerText;
+            
+            window.location.href = `upi://pay?pa=8899168241&pn=AmplifyAd&am=${total}&cu=INR&tn=${encodeURIComponent(track)}`;
+
             try {
-                await client.from('campaigns').insert([{ user_email: currentUserEmail, track: pendingCampaignData.track, status: "Pending Verification" }]);
+                await client.from('campaigns').insert([{ user_email: currentUserEmail, track: track, status: "Pending Verification" }]);
             } catch (e) { console.error("Sync error"); }
 
             document.getElementById('paymentModal').classList.add('hidden');
         }
 
+        // 5. HELPER FUNCTIONS
         function toggleAdminPanel() { document.getElementById('adminPanel').classList.toggle('hidden'); }
-        async function loadUserCampaigns() { /* ...logic... */ }
+        async function loadUserCampaigns() { /* ... */ }
         function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
         async function logout() { await client.auth.signOut(); location.reload(); }
     </script>
